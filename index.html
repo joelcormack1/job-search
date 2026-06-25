@@ -67,14 +67,14 @@
   .kicker{font-size:13px;color:var(--dim);font-weight:500}
   .welcome{display:flex;gap:12px;align-items:flex-start;margin-bottom:34px}
   .welcome .wav{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:12px;letter-spacing:.02em}
-  .jos{position:relative;width:56px;height:56px;flex-shrink:0;border-radius:50%;background:transparent;
-    filter:drop-shadow(0 0 7px rgba(255,120,200,.5)) drop-shadow(0 0 16px rgba(120,150,255,.45))}
-  .jos::before{content:"";position:absolute;inset:3%;border-radius:50%;
-    background:conic-gradient(from 0deg,#ff5ca8,#7c5cff,#22d3ee,#5b8cff,#ff5ca8);
-    -webkit-mask:radial-gradient(circle, transparent 50%, #000 57%);mask:radial-gradient(circle, transparent 50%, #000 57%);
-    filter:blur(2px);animation:josspin 5s linear infinite}
+  .jos{position:relative;display:inline-block;width:46px;height:46px;flex-shrink:0;border-radius:50%;background:transparent;
+    filter:drop-shadow(0 0 5px rgba(255,100,190,.6)) drop-shadow(0 0 14px rgba(110,140,255,.5))}
+  .jos::before{content:"";position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg,#ff5ca8,#7c5cff,#22d3ee,#5b8cff,#ff3ca0,#ff5ca8);
+    -webkit-mask:radial-gradient(circle, transparent 34%, #000 46%);mask:radial-gradient(circle, transparent 34%, #000 46%);
+    filter:blur(0.6px);animation:josspin 5s linear infinite}
   @keyframes josspin{to{transform:rotate(360deg)}}
-  @media (prefers-reduced-motion:reduce){.jos::before,.jos::after{animation:none}}
+  @media (prefers-reduced-motion:reduce){.jos::before{animation:none}}
 
   /* JoelOS floating button + chat */
   .josfab{position:fixed;bottom:24px;right:24px;z-index:70;display:none;align-items:center;gap:11px;cursor:pointer;
@@ -225,8 +225,7 @@
 <body>
 
   <div class="topbar">
-    <div class="wordmark"><span class="spark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.7 5.1L19 10l-5.3 1.9L12 17l-1.7-5.1L5 10l5.3-1.9z"/></svg></span>Wizard</div>
-    <span class="tb-project">· Job Search</span>
+    <div class="wordmark"><span class="spark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.7 5.1L19 10l-5.3 1.9L12 17l-1.7-5.1L5 10l5.3-1.9z"/></svg></span>Job Search</div>
     <span class="tb-live"><i></i>synced just now</span>
   </div>
 
