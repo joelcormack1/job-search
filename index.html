@@ -67,6 +67,16 @@
   .kicker{font-size:13px;color:var(--dim);font-weight:500}
   .welcome{display:flex;gap:12px;align-items:flex-start;margin-bottom:34px}
   .welcome .wav{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:12px;letter-spacing:.02em}
+  .jos{width:50px;height:50px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(124,92,255,.55)) drop-shadow(0 0 12px rgba(34,211,238,.32))}
+  .jos svg{width:100%;height:100%;overflow:visible;display:block}
+  .jos .ring{fill:none;stroke-width:6;stroke-linecap:round;transform-box:fill-box;transform-origin:center}
+  .jos .r1{stroke:url(#josg1);stroke-dasharray:150 95;animation:josspin 6s linear infinite}
+  .jos .r2{stroke:url(#josg2);stroke-dasharray:85 75;animation:josspin 4.2s linear infinite reverse}
+  .jos .r3{stroke:url(#josg3);stroke-dasharray:46 52;animation:josspin 2.8s linear infinite}
+  .jos .core{transform-box:fill-box;transform-origin:center;fill:url(#josg1);animation:jospulse 2.4s ease-in-out infinite}
+  @keyframes josspin{to{transform:rotate(360deg)}}
+  @keyframes jospulse{0%,100%{opacity:.55;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+  @media (prefers-reduced-motion:reduce){.jos .ring,.jos .core{animation:none}}
   .wbubble{position:relative;background:linear-gradient(135deg,#2f6bff,#5d8bff);color:#fff;border-radius:22px;border-top-left-radius:7px;padding:18px 22px 18px 22px;max-width:660px;box-shadow:0 10px 30px rgba(47,107,255,.30);font-size:14.5px;line-height:1.62}
   .wbubble .who{font-size:11.5px;font-weight:700;opacity:.82;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase}
   .wbubble b{font-weight:700}
@@ -195,7 +205,19 @@
   <!-- LIST -->
   <div class="page" id="list">
     <div class="welcome" id="welcome">
-      <div class="wav">Joel<br>OS</div>
+      <span class="jos" role="img" aria-label="JoelOS">
+        <svg viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="josg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset=".5" stop-color="#22d3ee"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient>
+            <linearGradient id="josg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#5b8cff"/></linearGradient>
+            <linearGradient id="josg3" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient>
+          </defs>
+          <circle class="ring r1" cx="50" cy="50" r="40"/>
+          <circle class="ring r2" cx="50" cy="50" r="29"/>
+          <circle class="ring r3" cx="50" cy="50" r="18"/>
+          <circle class="core" cx="50" cy="50" r="6"/>
+        </svg>
+      </span>
       <div class="wbubble">
         <button class="wclose" onclick="dismissWelcome()" title="Hide">×</button>
         <div class="who">JoelOS</div>
