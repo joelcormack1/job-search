@@ -75,6 +75,31 @@
     filter:blur(2px);animation:josspin 5s linear infinite}
   @keyframes josspin{to{transform:rotate(360deg)}}
   @media (prefers-reduced-motion:reduce){.jos::before,.jos::after{animation:none}}
+
+  /* JoelOS floating button + chat */
+  .josfab{position:fixed;bottom:24px;right:24px;z-index:70;display:none;align-items:center;gap:11px;cursor:pointer;
+    background:var(--glass-strong);border:0.5px solid var(--edge);border-radius:999px;padding:8px 18px 8px 8px;
+    -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 8px 26px rgba(20,30,55,.22);transition:transform .15s}
+  .josfab.show{display:flex}
+  .josfab:hover{transform:translateY(-2px)}
+  .josfab .jos{width:42px;height:42px}
+  .josfab .fablabel{font-size:14px;font-weight:600;color:var(--ink)}
+  .chatpanel{position:fixed;bottom:90px;right:24px;width:360px;max-width:calc(100vw - 40px);z-index:71;display:none;flex-direction:column;
+    background:var(--glass-strong);border:0.5px solid var(--edge);border-radius:22px;overflow:hidden;
+    -webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);box-shadow:0 28px 64px rgba(20,30,55,.42);animation:rise .2s ease}
+  .chatpanel.show{display:flex}
+  .chathead{display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:0.5px solid var(--hair)}
+  .chathead .jos{width:32px;height:32px}
+  .chathead .ct{font-size:14.5px;font-weight:700}
+  .chathead .cx{margin-left:auto;border:none;background:transparent;font-size:19px;color:var(--dim);cursor:pointer;line-height:1}
+  .chatbody{padding:16px;display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;min-height:90px}
+  .cmsg{font-size:13.5px;line-height:1.5;padding:9px 13px;border-radius:15px;max-width:86%;white-space:pre-wrap}
+  .cmsg.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:5px}
+  .cmsg.bot{align-self:flex-start;background:rgba(255,255,255,.62);color:var(--ink);border:0.5px solid var(--hair);border-bottom-left-radius:5px}
+  .chatfoot{display:flex;gap:8px;padding:12px 14px;border-top:0.5px solid var(--hair)}
+  .chatfoot input{flex:1;min-width:0;font-family:var(--sf);font-size:13.5px;border:0.5px solid var(--edge);border-radius:12px;padding:10px 13px;outline:none;background:rgba(255,255,255,.62)}
+  .chatfoot input:focus{border-color:var(--ink)}
+  .chatfoot button{border:none;background:var(--accent);color:#fff;border-radius:12px;padding:10px 15px;font-weight:600;cursor:pointer;font-size:13.5px}
   .wbubble{position:relative;background:linear-gradient(135deg,#2f6bff,#5d8bff);color:#fff;border-radius:22px;border-top-left-radius:7px;padding:18px 22px 18px 22px;max-width:660px;box-shadow:0 10px 30px rgba(47,107,255,.30);font-size:14.5px;line-height:1.62}
   .wbubble .who{font-size:11.5px;font-weight:700;opacity:.82;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase}
   .wbubble b{font-weight:700}
@@ -237,6 +262,16 @@
   <div class="page" id="detail"></div>
   <div class="toast" id="toast"></div>
 
+  <div class="josfab" id="josfab" onclick="toggleChat()">
+    <span class="jos" role="img" aria-label="JoelOS"></span>
+    <span class="fablabel">Ask JoelOS</span>
+  </div>
+  <div class="chatpanel" id="chatpanel">
+    <div class="chathead"><span class="jos"></span><span class="ct">JoelOS</span><button class="cx" onclick="toggleChat()">×</button></div>
+    <div class="chatbody" id="chatbody"></div>
+    <div class="chatfoot"><input id="chatinput" placeholder="Ask me anything…" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">Send</button></div>
+  </div>
+
 <script>
 /* ===== DATA ===== */
 const JOBS = [
@@ -265,7 +300,7 @@ const JOBS = [
     roleDesc:"A Graphic Designer here works across brand and marketing design: digital, social, retail, and packaging. LA-based, brand-led, and squarely in your apparel lane.",
     hook:"What excites me about Alo is helping build a premium wellness brand here in LA, designing across retail, digital, and apparel for a brand with a clear point of view." },
 
-  { company:"Roc Nation", role:"Design role", salute:"Roc Nation", location:"", fit:80, stage:"Applied", applied:"Jun 23, 2026", next:"⚠️ Confirm you applied", link:"",
+  { company:"Roc Nation", role:"Design role", salute:"Roc Nation", location:"", fit:80, stage:"Applied", applied:"Jun 23, 2026", next:"Follow up ~Jul 7", link:"",
     companyDesc:"Roc Nation is the entertainment company founded by Jay-Z: a music label plus artist and athlete management, publishing, and touring. Deeply embedded in music and culture.",
     roleDesc:"Likely a brand or creative design role for artists and campaigns. Exact title TBD. Note: you have a tailored resume saved for this, but I found no confirmation email — confirm you actually submitted.", tbd:true,
     hook:"What excites me about Roc Nation is working at the center of music, sport, and culture. Designing for artists has been the dream since I was a kid sketching album covers, and this sits right at that intersection." },
@@ -280,7 +315,7 @@ const JOBS = [
     roleDesc:"A Designer in the Make+ studio produces design and content for client campaigns — production-minded creative work that maps well to your treatment and deck output.",
     hook:"What excites me about the Make+ studio is its production-minded approach to design, turning campaign ideas into finished, crafted work, which is exactly how I already operate on treatments and pitches." },
 
-  { company:"Ralph Lauren", role:"Design role", salute:"Ralph Lauren", location:"", fit:75, stage:"Applied", applied:"Jun 14, 2026", next:"⚠️ Confirm you applied", link:"",
+  { company:"Ralph Lauren", role:"Design role", salute:"Ralph Lauren", location:"", fit:75, stage:"Applied", applied:"Jun 14, 2026", next:"Follow up ~Jun 28", link:"",
     companyDesc:"Ralph Lauren is an iconic American luxury lifestyle brand — Polo, Purple Label, and more — built on timeless Americana, apparel, and a deeply consistent brand world.",
     roleDesc:"Likely a brand or graphic design role for apparel and marketing. Exact title TBD. Note: tailored resume saved on disk, but no confirmation email found — confirm you actually submitted.", tbd:true,
     hook:"What excites me about Ralph Lauren is the discipline of an iconic American brand, where timeless craft and consistency define everything and great design quietly does the heavy lifting." },
@@ -644,8 +679,29 @@ window.submitSuggestion=async function(){
   }catch(e){ msg.textContent="Couldn't add it — check the URL and try again."; msg.style.color="#c0392b"; }
 };
 
-window.dismissWelcome=function(){var w=document.getElementById('welcome');if(w)w.style.display='none';try{localStorage.setItem('welcomeHidden','1')}catch(e){}};
-(function(){try{if(localStorage.getItem('welcomeHidden')==='1'){var w=document.getElementById('welcome');if(w)w.style.display='none';}}catch(e){}})();
+window.dismissWelcome=function(){var w=document.getElementById('welcome');if(w)w.style.display='none';var f=document.getElementById('josfab');if(f)f.classList.add('show');try{localStorage.setItem('welcomeHidden','1')}catch(e){}};
+(function(){try{if(localStorage.getItem('welcomeHidden')==='1'){var w=document.getElementById('welcome');if(w)w.style.display='none';var f=document.getElementById('josfab');if(f)f.classList.add('show');}}catch(e){}})();
+
+// JoelOS chat
+const ASK_URL = SUPA_URL + "/functions/v1/ask";
+let chatHist = [];
+function toggleChat(){
+  const p=document.getElementById('chatpanel'); const open=p.classList.toggle('show');
+  if(open && chatHist.length===0) addMsg('bot',"Hey, it's JoelOS 👋 Ask me anything about your job search.");
+  if(open) setTimeout(()=>{var i=document.getElementById('chatinput'); if(i) i.focus();},60);
+}
+function addMsg(who,text){ const b=document.getElementById('chatbody'); const d=document.createElement('div'); d.className='cmsg '+who; d.textContent=text; b.appendChild(d); b.scrollTop=b.scrollHeight; return d; }
+async function sendChat(){
+  const inp=document.getElementById('chatinput'); const q=(inp.value||'').trim(); if(!q) return;
+  addMsg('me',q); inp.value=''; chatHist.push({role:'user',content:q});
+  const thinking=addMsg('bot','…');
+  try{
+    const r=await fetch(SUPA_URL+"/rest/v1/questions",{method:'POST',headers:{apikey:SUPA_KEY,Authorization:'Bearer '+SUPA_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({question:q})});
+    if(!r.ok) throw new Error();
+    thinking.textContent="Got it — I've passed that straight to JoelOS. Joel will see it and get you an answer. 🙌";
+  }catch(e){ thinking.textContent="Couldn't send that just now — try again in a sec."; }
+}
+window.toggleChat=toggleChat; window.sendChat=sendChat;
 
 switchTab("prospects");
 loadSuggestions();
