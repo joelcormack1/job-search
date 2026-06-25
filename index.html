@@ -67,20 +67,16 @@
   .kicker{font-size:13px;color:var(--dim);font-weight:500}
   .welcome{display:flex;gap:12px;align-items:flex-start;margin-bottom:34px}
   .welcome .wav{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:12px;letter-spacing:.02em}
-  .jos{position:relative;width:54px;height:54px;flex-shrink:0;border-radius:50%;overflow:hidden;
-    background:radial-gradient(circle at 50% 58%, #1b1233 0%, #0a0612 72%);
-    box-shadow:0 0 15px rgba(190,120,255,.55), 0 0 32px rgba(90,150,255,.35), inset 0 0 13px rgba(255,150,220,.22)}
-  .jos::before{content:"";position:absolute;inset:-25%;border-radius:50%;
-    background:
-      radial-gradient(closest-side at 38% 64%, rgba(255,90,170,.95), transparent 62%),
-      radial-gradient(closest-side at 62% 40%, rgba(90,165,255,.92), transparent 62%),
-      radial-gradient(closest-side at 56% 72%, rgba(170,120,255,.88), transparent 66%);
-    filter:blur(3px);animation:josswirl 7s linear infinite}
-  .jos::after{content:"";position:absolute;inset:0;border-radius:50%;mix-blend-mode:screen;
-    background:conic-gradient(from 0deg, transparent 0 56%, rgba(255,255,255,.95) 70%, rgba(255,185,230,.55) 81%, transparent 90%);
-    -webkit-mask:radial-gradient(circle, transparent 57%, #000 64%);mask:radial-gradient(circle, transparent 57%, #000 64%);
-    animation:josspin 4.5s linear infinite}
-  @keyframes josswirl{to{transform:rotate(360deg)}}
+  .jos{position:relative;width:56px;height:56px;flex-shrink:0;border-radius:50%;background:transparent;
+    filter:drop-shadow(0 0 7px rgba(255,120,200,.5)) drop-shadow(0 0 16px rgba(120,150,255,.45))}
+  .jos::before{content:"";position:absolute;inset:3%;border-radius:50%;
+    background:conic-gradient(from 0deg,#ff5ca8,#7c5cff,#22d3ee,#5b8cff,#ff5ca8);
+    -webkit-mask:radial-gradient(circle, transparent 50%, #000 57%);mask:radial-gradient(circle, transparent 50%, #000 57%);
+    filter:blur(2px);animation:josspin 5s linear infinite}
+  .jos::after{content:"";position:absolute;inset:25%;border-radius:50%;
+    background:conic-gradient(from 180deg,#22d3ee,#ff5ca8,#7c5cff,#22d3ee);
+    -webkit-mask:radial-gradient(circle, transparent 38%, #000 52%);mask:radial-gradient(circle, transparent 38%, #000 52%);
+    filter:blur(1.5px);opacity:.92;animation:josspin 3.4s linear infinite reverse}
   @keyframes josspin{to{transform:rotate(360deg)}}
   @media (prefers-reduced-motion:reduce){.jos::before,.jos::after{animation:none}}
   .wbubble{position:relative;background:linear-gradient(135deg,#2f6bff,#5d8bff);color:#fff;border-radius:22px;border-top-left-radius:7px;padding:18px 22px 18px 22px;max-width:660px;box-shadow:0 10px 30px rgba(47,107,255,.30);font-size:14.5px;line-height:1.62}
