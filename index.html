@@ -67,16 +67,22 @@
   .kicker{font-size:13px;color:var(--dim);font-weight:500}
   .welcome{display:flex;gap:12px;align-items:flex-start;margin-bottom:34px}
   .welcome .wav{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:12px;letter-spacing:.02em}
-  .jos{width:50px;height:50px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(124,92,255,.55)) drop-shadow(0 0 12px rgba(34,211,238,.32))}
-  .jos svg{width:100%;height:100%;overflow:visible;display:block}
-  .jos .ring{fill:none;stroke-width:6;stroke-linecap:round;transform-box:fill-box;transform-origin:center}
-  .jos .r1{stroke:url(#josg1);stroke-dasharray:150 95;animation:josspin 6s linear infinite}
-  .jos .r2{stroke:url(#josg2);stroke-dasharray:85 75;animation:josspin 4.2s linear infinite reverse}
-  .jos .r3{stroke:url(#josg3);stroke-dasharray:46 52;animation:josspin 2.8s linear infinite}
-  .jos .core{transform-box:fill-box;transform-origin:center;fill:url(#josg1);animation:jospulse 2.4s ease-in-out infinite}
+  .jos{position:relative;width:54px;height:54px;flex-shrink:0;border-radius:50%;overflow:hidden;
+    background:radial-gradient(circle at 50% 58%, #1b1233 0%, #0a0612 72%);
+    box-shadow:0 0 15px rgba(190,120,255,.55), 0 0 32px rgba(90,150,255,.35), inset 0 0 13px rgba(255,150,220,.22)}
+  .jos::before{content:"";position:absolute;inset:-25%;border-radius:50%;
+    background:
+      radial-gradient(closest-side at 38% 64%, rgba(255,90,170,.95), transparent 62%),
+      radial-gradient(closest-side at 62% 40%, rgba(90,165,255,.92), transparent 62%),
+      radial-gradient(closest-side at 56% 72%, rgba(170,120,255,.88), transparent 66%);
+    filter:blur(3px);animation:josswirl 7s linear infinite}
+  .jos::after{content:"";position:absolute;inset:0;border-radius:50%;mix-blend-mode:screen;
+    background:conic-gradient(from 0deg, transparent 0 56%, rgba(255,255,255,.95) 70%, rgba(255,185,230,.55) 81%, transparent 90%);
+    -webkit-mask:radial-gradient(circle, transparent 57%, #000 64%);mask:radial-gradient(circle, transparent 57%, #000 64%);
+    animation:josspin 4.5s linear infinite}
+  @keyframes josswirl{to{transform:rotate(360deg)}}
   @keyframes josspin{to{transform:rotate(360deg)}}
-  @keyframes jospulse{0%,100%{opacity:.55;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
-  @media (prefers-reduced-motion:reduce){.jos .ring,.jos .core{animation:none}}
+  @media (prefers-reduced-motion:reduce){.jos::before,.jos::after{animation:none}}
   .wbubble{position:relative;background:linear-gradient(135deg,#2f6bff,#5d8bff);color:#fff;border-radius:22px;border-top-left-radius:7px;padding:18px 22px 18px 22px;max-width:660px;box-shadow:0 10px 30px rgba(47,107,255,.30);font-size:14.5px;line-height:1.62}
   .wbubble .who{font-size:11.5px;font-weight:700;opacity:.82;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase}
   .wbubble b{font-weight:700}
@@ -205,19 +211,7 @@
   <!-- LIST -->
   <div class="page" id="list">
     <div class="welcome" id="welcome">
-      <span class="jos" role="img" aria-label="JoelOS">
-        <svg viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="josg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset=".5" stop-color="#22d3ee"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient>
-            <linearGradient id="josg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#5b8cff"/></linearGradient>
-            <linearGradient id="josg3" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ff5ca8"/><stop offset="1" stop-color="#7c5cff"/></linearGradient>
-          </defs>
-          <circle class="ring r1" cx="50" cy="50" r="40"/>
-          <circle class="ring r2" cx="50" cy="50" r="29"/>
-          <circle class="ring r3" cx="50" cy="50" r="18"/>
-          <circle class="core" cx="50" cy="50" r="6"/>
-        </svg>
-      </span>
+      <span class="jos" role="img" aria-label="JoelOS"></span>
       <div class="wbubble">
         <button class="wclose" onclick="dismissWelcome()" title="Hide">×</button>
         <div class="who">JoelOS</div>
