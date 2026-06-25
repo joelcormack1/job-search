@@ -100,6 +100,17 @@
   .chatfoot input{flex:1;min-width:0;font-family:var(--sf);font-size:13.5px;border:0.5px solid var(--edge);border-radius:12px;padding:10px 13px;outline:none;background:rgba(255,255,255,.62)}
   .chatfoot input:focus{border-color:var(--ink)}
   .chatfoot button{border:none;background:var(--accent);color:#fff;border-radius:12px;padding:10px 15px;font-weight:600;cursor:pointer;font-size:13.5px}
+
+  /* resume viewer */
+  .rmodal{position:fixed;inset:0;background:rgba(20,28,48,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:90;padding:24px}
+  .rmodal.show{display:flex}
+  .rinner{width:min(880px,100%);height:90vh;background:var(--glass-strong);border:0.5px solid var(--edge);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(20,30,55,.5)}
+  .rhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:0.5px solid var(--hair);font-size:14px;font-weight:700;color:var(--ink)}
+  .ractions{display:flex;gap:8px;align-items:center}
+  .rbtn{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--ink);background:rgba(255,255,255,.55);border:0.5px solid var(--edge);border-radius:9px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+  .rbtn:hover{background:#fff}
+  .rbtn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .rframe{flex:1;border:none;width:100%;background:#fff}
   .wbubble{position:relative;background:linear-gradient(135deg,#2f6bff,#5d8bff);color:#fff;border-radius:22px;border-top-left-radius:7px;padding:18px 22px 18px 22px;max-width:660px;box-shadow:0 10px 30px rgba(47,107,255,.30);font-size:14.5px;line-height:1.62}
   .wbubble .who{font-size:11.5px;font-weight:700;opacity:.82;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase}
   .wbubble b{font-weight:700}
@@ -221,6 +232,7 @@
 
   <div class="quickbar">
     <span class="qlabel">Quick copy</span>
+    <div class="qchip" onclick="openResume()" style="cursor:pointer"><span class="qk">Resume</span><span class="qv">View / download PDF</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></div>
     <div class="qchip" data-copy="https://joelcormackdesign.com"><span class="qk">Portfolio</span><span class="qv">joelcormackdesign.com</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></div>
     <div class="qchip" data-copy="https://www.linkedin.com/in/joel-cormack-8ab75822a"><span class="qk">LinkedIn</span><span class="qv">/in/joel-cormack</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></div>
   </div>
@@ -270,6 +282,18 @@
     <div class="chathead"><span class="jos"></span><span class="ct">JoelOS</span><button class="cx" onclick="toggleChat()">×</button></div>
     <div class="chatbody" id="chatbody"></div>
     <div class="chatfoot"><input id="chatinput" placeholder="Ask me anything…" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">Send</button></div>
+  </div>
+  <div class="rmodal" id="rmodal" onclick="if(event.target===this)closeResume()">
+    <div class="rinner">
+      <div class="rhead">Joel Cormack — Resume
+        <span class="ractions">
+          <a class="rbtn primary" href="resume.pdf" target="_blank" rel="noopener">Open ↗</a>
+          <a class="rbtn" href="resume.pdf" download="Joel Cormack Resume.pdf">Download</a>
+          <button class="rbtn" onclick="closeResume()">Close ×</button>
+        </span>
+      </div>
+      <iframe class="rframe" id="rframe" title="Joel Cormack Resume"></iframe>
+    </div>
   </div>
 
 <script>
@@ -703,6 +727,23 @@ async function sendChat(){
 }
 window.toggleChat=toggleChat; window.sendChat=sendChat;
 
+// resume viewer
+function openResume(){var m=document.getElementById('rmodal');var f=document.getElementById('rframe');if(f&&!f.getAttribute('src'))f.setAttribute('src','resume.pdf');if(m)m.classList.add('show');}
+function closeResume(){var m=document.getElementById('rmodal');if(m)m.classList.remove('show');}
+window.openResume=openResume; window.closeResume=closeResume;
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ closeResume(); var c=document.getElementById('chatpanel'); if(c) c.classList.remove('show'); }});
+
+// JoelOS reacts to the cursor on hover (subtle 3D tilt + lift)
+document.querySelectorAll('.jos').forEach(function(el){
+  el.style.transition='transform .12s ease';
+  el.addEventListener('mousemove',function(e){
+    var r=el.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width-0.5, y=(e.clientY-r.top)/r.height-0.5;
+    el.style.transform='perspective(140px) rotateY('+(x*26)+'deg) rotateX('+(-y*26)+'deg) scale(1.15)';
+  });
+  el.addEventListener('mouseleave',function(){ el.style.transform=''; });
+});
+
 switchTab("prospects");
 loadSuggestions();
 
@@ -771,6 +812,7 @@ function fallback(text,cb){const ta=document.createElement("textarea");ta.value=
 document.querySelectorAll(".qchip").forEach(chip=>{
   chip.addEventListener("click",()=>{
     const val=chip.getAttribute("data-copy");
+    if(!val) return;
     const flash=()=>{chip.classList.add("copied");const k=chip.querySelector(".qk").textContent;chip.querySelector(".qk").textContent="Copied";setTimeout(()=>{chip.classList.remove("copied");chip.querySelector(".qk").textContent=k;},1400);};
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(val).then(flash).catch(()=>fallback(val,flash));}
     else fallback(val,flash);
