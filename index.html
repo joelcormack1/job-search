@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Joel — Job Search</title>
+<style>
+  :root{
+    --ink:#1A1A1F;
+    --dim:rgba(28,28,34,.62);
+    --faint:rgba(28,28,34,.4);
+    --glass:rgba(255,255,255,.58);
+    --glass-soft:rgba(255,255,255,.4);
+    --glass-strong:rgba(255,255,255,.78);
+    --edge:rgba(255,255,255,.7);
+    --hair:rgba(28,28,40,.09);
+    --accent:#1A1A1F;
+    --accent-glass:rgba(26,26,31,.07);
+    --amber:#C77B2B;
+    --sf:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Helvetica,sans-serif;
+    --serif:'New York','Iowan Old Style','Times New Roman',Georgia,serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  svg{stroke-linecap:round;stroke-linejoin:round}
+  html,body{min-height:100%}
+  body{
+    font-family:var(--sf);min-height:100vh;-webkit-font-smoothing:antialiased;color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%,rgba(120,200,255,.5),transparent 38%),
+      radial-gradient(circle at 88% 6%,rgba(184,160,255,.45),transparent 40%),
+      radial-gradient(circle at 92% 88%,rgba(150,170,255,.4),transparent 42%),
+      radial-gradient(circle at 8% 94%,rgba(255,201,168,.4),transparent 42%),
+      linear-gradient(135deg,#E9EFF6,#F4F0EF);
+    background-attachment:fixed;
+  }
+
+  /* full-width site header */
+  .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;
+    padding:16px 40px;border-bottom:0.5px solid var(--hair);
+    background:rgba(255,255,255,.42);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
+  .wordmark{display:flex;align-items:center;gap:9px;font-weight:600;font-size:16px}
+  .spark{width:24px;height:24px;border-radius:8px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center}
+  .tb-project{font-size:14px;color:var(--dim);font-weight:500}
+  .tb-live{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;color:#fff;background:var(--accent);padding:7px 13px;border-radius:999px}
+  .tb-live i{width:7px;height:7px;border-radius:50%;background:#fff}
+
+  /* quick-copy strip */
+  .quickbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+    padding:11px 40px;border-bottom:0.5px solid var(--hair);
+    background:rgba(255,255,255,.28);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+  .qlabel{font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--faint);margin-right:4px}
+  .qchip{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer;
+    background:rgba(255,255,255,.55);border:0.5px solid var(--edge);border-radius:10px;padding:7px 12px;transition:.15s}
+  .qchip:hover{background:#fff}
+  .qchip .qk{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--faint)}
+  .qchip .qv{color:var(--ink)}
+  .qchip svg{opacity:.5}
+  .qchip.copied{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .qchip.copied .qk,.qchip.copied .qv{color:#fff}
+  .qchip.copied svg{opacity:.9}
+  @media(max-width:920px){.quickbar{padding:10px 22px}.qchip .qv{display:none}}
+
+  .page{max-width:1240px;margin:0 auto;padding:46px 40px 90px}
+
+  /* intro */
+  .kicker{font-size:13px;color:var(--dim);font-weight:500}
+  .welcome{display:flex;gap:12px;align-items:flex-start;margin-bottom:34px}
+  .welcome .wav{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:12px;letter-spacing:.02em}
+  .wbubble{position:relative;background:linear-gradient(135deg,#2f6bff,#5d8bff);color:#fff;border-radius:22px;border-top-left-radius:7px;padding:18px 22px 18px 22px;max-width:660px;box-shadow:0 10px 30px rgba(47,107,255,.30);font-size:14.5px;line-height:1.62}
+  .wbubble .who{font-size:11.5px;font-weight:700;opacity:.82;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase}
+  .wbubble b{font-weight:700}
+  .wbubble em{font-style:normal;background:rgba(255,255,255,.18);padding:1px 6px;border-radius:6px;font-weight:600}
+  .wbubble ol{margin:11px 0 3px;padding-left:20px}
+  .wbubble li{margin-bottom:8px}
+  .wbubble .sign{margin-top:13px;font-size:13.5px;opacity:.92}
+  .wclose{position:absolute;top:12px;right:13px;width:24px;height:24px;border:none;background:rgba(255,255,255,.18);color:#fff;border-radius:8px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center}
+  .wclose:hover{background:rgba(255,255,255,.32)}
+  h1.big{font-size:46px;font-weight:700;letter-spacing:-.03em;margin-top:4px;line-height:1.04}
+  .lead{font-size:16px;color:var(--dim);margin-top:14px;max-width:620px;line-height:1.55}
+  .statline{display:flex;gap:26px;margin-top:26px;flex-wrap:wrap}
+  .st{display:flex;flex-direction:column}
+  .st .n{font-size:30px;font-weight:700;letter-spacing:-.02em}
+  .st .l{font-size:12px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-top:3px;font-weight:600}
+
+  .seclabel{font-size:13px;font-weight:600;color:var(--dim);margin:46px 2px 16px}
+
+  .tabs{display:flex;gap:8px;margin:42px 0 20px;border-bottom:0.5px solid var(--hair);padding-bottom:0}
+  .tab{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:600;color:var(--dim);cursor:pointer;
+    padding:10px 4px 14px;margin-bottom:-1px;border-bottom:2px solid transparent;transition:.15s}
+  .tab:hover{color:var(--ink)}
+  .tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+  .tab .cnt{font-size:12px;font-weight:700;background:var(--accent-glass);color:var(--ink);border-radius:999px;padding:2px 9px}
+  .tab.on .cnt{background:var(--accent);color:#fff}
+  .tabhint{font-size:13px;color:var(--faint);margin:0 2px 16px}
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 2px 22px}
+  .fchip{font-size:12.5px;font-weight:500;color:var(--dim);background:rgba(255,255,255,.5);border:0.5px solid var(--edge);border-radius:999px;padding:6px 13px;cursor:pointer;transition:.15s}
+  .fchip:hover{background:#fff;color:var(--ink)}
+  .fchip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .fchip b{font-weight:700;opacity:.65;margin-left:3px}
+  .fchip.on b{opacity:.85}
+  .sform{background:var(--glass);border:0.5px solid var(--edge);border-radius:20px;padding:24px 26px;max-width:640px;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 4px 18px rgba(20,30,55,.07)}
+  .sf-title{font-size:16px;font-weight:700;margin-bottom:4px}
+  .sf-sub{font-size:13px;color:var(--dim);margin-bottom:16px}
+  .sf-in{width:100%;font-family:var(--sf);font-size:14px;color:var(--ink);background:rgba(255,255,255,.65);border:0.5px solid var(--edge);border-radius:11px;padding:11px 13px;margin-bottom:10px;outline:none}
+  .sf-in:focus{border-color:var(--ink)}
+  .sf-row{display:flex;gap:10px}
+  .sf-row .sf-in{flex:1;min-width:0}
+  textarea.sf-in{min-height:62px;resize:vertical}
+  .sf-btn{font-size:14px;font-weight:600;color:#fff;background:var(--accent);border:none;border-radius:11px;padding:11px 20px;cursor:pointer;transition:.15s}
+  .sf-btn:hover{transform:translateY(-1px)}
+  .sf-msg{font-size:13px;margin-top:10px;min-height:16px;font-weight:500}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .card{background:var(--glass);border:0.5px solid var(--edge);border-radius:20px;padding:20px 20px 17px;cursor:pointer;
+    -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 4px 18px rgba(20,30,55,.07);
+    transition:.18s;display:flex;flex-direction:column;min-height:148px}
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(20,30,55,.13);background:var(--glass-strong)}
+  .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .card .co{font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .card .ro{font-size:13.5px;color:var(--dim);margin-top:3px;line-height:1.35}
+  .fitb{font-size:12.5px;font-weight:700;color:#fff;background:var(--accent);border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .fitb.mid{background:var(--accent-glass);color:var(--ink)}
+  .card .foot{margin-top:auto;padding-top:15px;display:flex;align-items:center;justify-content:space-between}
+  .chip{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--faint);border:0.5px solid var(--hair);border-radius:7px;padding:3px 8px}
+  .chip.warn{color:var(--amber);border-color:rgba(199,123,43,.3)}
+  .lvl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-radius:7px;padding:3px 9px;white-space:nowrap}
+  .lvl-range{background:var(--accent);color:#fff}
+  .lvl-reach{background:var(--accent-glass);color:var(--ink);border:0.5px solid var(--hair)}
+  .lvl-senior{background:rgba(199,123,43,.14);color:var(--amber);border:0.5px solid rgba(199,123,43,.3)}
+  .posted{font-size:11.5px;color:var(--faint);margin-top:7px}
+  .open{font-size:13px;color:var(--dim);font-weight:600;display:flex;align-items:center;gap:5px}
+  .card:hover .open{color:var(--ink)}
+  .footr{display:flex;align-items:center;gap:10px}
+  .del{display:none;font-size:11px;font-weight:600;color:#c0392b;background:rgba(192,57,43,.08);border:0.5px solid rgba(192,57,43,.22);border-radius:7px;padding:3px 9px;cursor:pointer;transition:.15s}
+  .card:hover .del{display:inline-block}
+  .del:hover{background:#c0392b;color:#fff;border-color:#c0392b}
+  .btn{font-size:13px;font-weight:600;border-radius:11px;padding:9px 15px;border:0.5px solid var(--edge);background:rgba(255,255,255,.6);color:var(--ink);cursor:pointer;transition:.15s}
+  .btn:hover{background:#fff}
+  .btn.danger{color:#c0392b}
+  .btn.danger:hover{background:#fbeae8}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:80;box-shadow:0 12px 34px rgba(0,0,0,.3)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+  .toast .undo{color:#9db8ff;font-weight:700;cursor:pointer;margin-left:8px}
+
+  /* detail page */
+  #detail{display:none}
+  .back{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--dim);cursor:pointer;margin-bottom:26px}
+  .back:hover{color:var(--ink)}
+  .dhead{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+  .dhead h1{font-size:40px;font-weight:700;letter-spacing:-.03em}
+  .dhead .drole{font-size:17px;color:var(--dim);margin-top:5px;font-weight:500}
+  .metarow{display:flex;gap:9px;flex-wrap:wrap;margin:22px 0 6px}
+  .pill{font-size:12px;border:0.5px solid var(--edge);background:rgba(255,255,255,.5);border-radius:9px;padding:6px 12px;color:var(--dim);font-weight:500}
+  .pill b{color:var(--ink);font-weight:700}
+  .pill.fitp{background:var(--accent);color:#fff;border-color:var(--accent)}.pill.fitp b{color:#fff}
+
+  .cols{display:grid;grid-template-columns:1fr 1.15fr;gap:22px;margin-top:30px;align-items:start}
+  .panel{background:var(--glass);border:0.5px solid var(--edge);border-radius:20px;padding:26px 28px;
+    -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 4px 18px rgba(20,30,55,.07)}
+  .panel h3{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:10px;font-weight:700}
+  .panel p{font-size:14.5px;line-height:1.66;color:#33333b}
+  .panel + .panel{margin-top:16px}
+  .tbd{font-size:12px;color:var(--faint);font-style:italic;margin-top:8px}
+  .nextline{font-size:14.5px;line-height:1.6;color:#33333b}
+
+  .letterpanel{position:relative}
+  .letterhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .letterhead .lt{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);font-weight:700}
+  .copybtn{font-size:13px;font-weight:600;color:#fff;background:var(--accent);border:none;border-radius:10px;padding:8px 15px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s}
+  .copybtn:hover{transform:translateY(-1px)}
+  .copybtn.done{background:var(--accent-glass);color:var(--ink)}
+  .letter{font-family:var(--serif);font-size:14.5px;line-height:1.7;color:#262630;white-space:pre-wrap;
+    background:rgba(255,255,255,.55);border:0.5px solid var(--hair);border-radius:14px;padding:24px 26px;max-height:560px;overflow-y:auto}
+  .letternote{font-size:12px;color:var(--faint);margin-top:12px;line-height:1.5}
+
+  @media(max-width:920px){.grid{grid-template-columns:1fr 1fr}.cols{grid-template-columns:1fr}.page{padding:34px 22px 70px}.topbar{padding:14px 22px}h1.big{font-size:36px}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wordmark"><span class="spark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.7 5.1L19 10l-5.3 1.9L12 17l-1.7-5.1L5 10l5.3-1.9z"/></svg></span>Wizard</div>
+    <span class="tb-project">· Job Search</span>
+    <span class="tb-live"><i></i>synced just now</span>
+  </div>
+
+  <div class="quickbar">
+    <span class="qlabel">Quick copy</span>
+    <div class="qchip" data-copy="https://joelcormackdesign.com"><span class="qk">Portfolio</span><span class="qv">joelcormackdesign.com</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></div>
+    <div class="qchip" data-copy="https://www.linkedin.com/in/joel-cormack-8ab75822a"><span class="qk">LinkedIn</span><span class="qv">/in/joel-cormack</span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></div>
+  </div>
+
+  <!-- LIST -->
+  <div class="page" id="list">
+    <div class="welcome" id="welcome">
+      <div class="wav">Joel<br>OS</div>
+      <div class="wbubble">
+        <button class="wclose" onclick="dismissWelcome()" title="Hide">×</button>
+        <div class="who">JoelOS</div>
+        Hi Jason — it's JoelOS 👋<br>
+        Here's the job-search dashboard Joel and I have been building together. I put together a quick step-by-step so you can dive right in:
+        <ol>
+          <li><b>Browse the board.</b> <em>Prospects</em> are the roles Joel's going after; <em>Applied</em> are already out the door. Use the industry chips (Music, Apparel, Sports…) to narrow it down.</li>
+          <li><b>Open any job.</b> Tap a card to see what the company does, what the role actually is, and a cover letter tailored to it.</li>
+          <li><b>Add your own finds.</b> Spot something he'd be great for? Open the <em>From Dad</em> tab, paste the link, and it drops straight onto his board — tagged from you, live.</li>
+        </ol>
+        <div class="sign">That's the whole thing. Thanks for having his back.<br>— JoelOS</div>
+      </div>
+    </div>
+    <div class="kicker" id="date"></div>
+    <h1 class="big">Roles worth chasing.</h1>
+    <p class="lead">Every prospect in one place. Tap any role to read what the company does, what the job is, and a custom cover letter ready to copy and send.</p>
+    <div class="statline" id="stats"></div>
+
+    <div class="tabs">
+      <div class="tab on" id="tab-prospects" onclick="switchTab('prospects')">Prospects <span class="cnt" id="cnt-prospects">0</span></div>
+      <div class="tab" id="tab-applied" onclick="switchTab('applied')">Applied <span class="cnt" id="cnt-applied">0</span></div>
+      <div class="tab" id="tab-suggestions" onclick="switchTab('suggestions')">From Dad <span class="cnt" id="cnt-suggest">0</span></div>
+    </div>
+    <div class="tabhint" id="tabhint"></div>
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+    <div class="suggest" id="suggest" style="display:none"></div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="page" id="detail"></div>
+  <div class="toast" id="toast"></div>
+
+<script>
+/* ===== DATA ===== */
+const JOBS = [
+  { company:"Live Nation", role:"Art Director", salute:"Live Nation", location:"", fit:90, stage:"Applied", applied:"Jun 24, 2026", next:"Follow up ~Jul 8", link:"",
+    companyDesc:"Live Nation Entertainment is the largest live-events and concert company in the world. It promotes tours and festivals globally, operates a huge roster of venues, and owns Ticketmaster. The creative work spans artist campaigns, festival branding, and large-scale marketing across digital, social, and out-of-home.",
+    roleDesc:"An Art Director sets the visual direction for campaigns (tours, festivals, brand moments), concepts the big idea, and guides designers to execute it. This is your north-star title at a company that lives in the music and branded-content world you already work in.",
+    hook:"What excites me about Live Nation is personal: a big part of why I moved to LA was to work around music and live culture. Stepping into an Art Director role here, shaping the visual world around tours and artists, is the kind of work I'd happily do whether or not it was a job." },
+
+  { company:"Universal Music Group", role:"Brand Designer", salute:"Universal Music Group", location:"", fit:82, stage:"Applied", applied:"Jun 22, 2026", next:"Follow up ~Jul 6", link:"",
+    companyDesc:"UMG is the biggest of the 'big three' music companies, home to labels like Interscope, Republic, Def Jam, and Capitol. Beyond recorded music it runs publishing, merch, and major artist brand initiatives.",
+    roleDesc:"A Brand Designer builds identity systems and campaign assets for artists, labels, and company initiatives across social, digital, packaging, and merch. Strong overlap with your branded-entertainment and apparel experience.",
+    hook:"What excites me about Universal Music Group is honestly a lifelong thing: designing album covers has been my dream since I was a kid, and building visual worlds for artists and labels is exactly the work I moved to LA to do." },
+
+  { company:"Insomniac", role:"Senior Graphic Designer, Apparel", salute:"Insomniac", location:"", fit:82, stage:"Applied", applied:"Jun 22, 2026", next:"Follow up ~Jul 6", link:"",
+    companyDesc:"Insomniac is the powerhouse behind electronic-music festivals like EDC Las Vegas (owned by Live Nation). It produces massive immersive experiences and a heavy merch and apparel program tied to those events.",
+    roleDesc:"A Senior Graphic Designer, Apparel leads merch and apparel graphics from concept to production for festivals and events. The 'Senior' title is a step up, and apparel graphics is one of your listed strengths.",
+    hook:"What excites me about Insomniac is the mix of music and apparel: designing the merch fans live in, for the kind of live-music culture I moved to LA to be part of." },
+
+  { company:"Kith", role:"Design role", salute:"Kith", location:"", fit:80, stage:"Applied", applied:"Jun 24, 2026", next:"Follow up ~Jul 8", link:"",
+    companyDesc:"Kith is a premium NYC-based streetwear and lifestyle brand and retailer, known for high-end apparel, footwear collaborations, Kith Treats, and meticulously designed retail experiences.",
+    roleDesc:"Likely a brand or graphic design role across apparel, campaigns, and retail. Exact title TBD — a strong match for your apparel and brand-identity work.", tbd:true,
+    hook:"What excites me about Kith is the obsessive level of craft across apparel, retail, and brand, where every detail is considered and design is treated as culture." },
+
+  { company:"ALO", role:"Graphic Designer", salute:"Alo", location:"LA", fit:80, stage:"Applied", applied:"Jun 22, 2026", next:"Follow up ~Jul 6", link:"",
+    companyDesc:"Alo Yoga is an LA-based premium athleisure and wellness brand, spanning apparel, retail, and a big content and community engine. Local to you.",
+    roleDesc:"A Graphic Designer here works across brand and marketing design: digital, social, retail, and packaging. LA-based, brand-led, and squarely in your apparel lane.",
+    hook:"What excites me about Alo is helping build a premium wellness brand here in LA, designing across retail, digital, and apparel for a brand with a clear point of view." },
+
+  { company:"Roc Nation", role:"Design role", salute:"Roc Nation", location:"", fit:80, stage:"Applied", applied:"Jun 23, 2026", next:"⚠️ Confirm you applied", link:"",
+    companyDesc:"Roc Nation is the entertainment company founded by Jay-Z: a music label plus artist and athlete management, publishing, and touring. Deeply embedded in music and culture.",
+    roleDesc:"Likely a brand or creative design role for artists and campaigns. Exact title TBD. Note: you have a tailored resume saved for this, but I found no confirmation email — confirm you actually submitted.", tbd:true,
+    hook:"What excites me about Roc Nation is working at the center of music, sport, and culture. Designing for artists has been the dream since I was a kid sketching album covers, and this sits right at that intersection." },
+
+  { company:"dentsu", role:"Designer", salute:"dentsu", location:"", fit:78, stage:"Applied", applied:"Jun 24, 2026", next:"Follow up ~Jul 8", link:"",
+    companyDesc:"dentsu is a global advertising and marketing network with creative, media, and customer-experience arms, working across a wide range of major clients.",
+    roleDesc:"A Designer in an agency setting produces campaign and brand design across multiple clients — fast-paced, varied work close to what you do on treatments and pitches.",
+    hook:"What excites me about dentsu is the breadth of clients and the pace of agency work, and the chance to bring both craft and creative curiosity to every brief." },
+
+  { company:"M+C Saatchi Group", role:"Designer, Make+ Design Studio", salute:"M+C Saatchi", location:"", fit:78, stage:"Applied", applied:"Jun 24, 2026", next:"Follow up ~Jul 8", link:"",
+    companyDesc:"M&C Saatchi is a global advertising and communications group. 'Make+' is its in-house production and design studio that turns campaign ideas into finished content.",
+    roleDesc:"A Designer in the Make+ studio produces design and content for client campaigns — production-minded creative work that maps well to your treatment and deck output.",
+    hook:"What excites me about the Make+ studio is its production-minded approach to design, turning campaign ideas into finished, crafted work, which is exactly how I already operate on treatments and pitches." },
+
+  { company:"Ralph Lauren", role:"Design role", salute:"Ralph Lauren", location:"", fit:75, stage:"Applied", applied:"Jun 14, 2026", next:"⚠️ Confirm you applied", link:"",
+    companyDesc:"Ralph Lauren is an iconic American luxury lifestyle brand — Polo, Purple Label, and more — built on timeless Americana, apparel, and a deeply consistent brand world.",
+    roleDesc:"Likely a brand or graphic design role for apparel and marketing. Exact title TBD. Note: tailored resume saved on disk, but no confirmation email found — confirm you actually submitted.", tbd:true,
+    hook:"What excites me about Ralph Lauren is the discipline of an iconic American brand, where timeless craft and consistency define everything and great design quietly does the heavy lifting." },
+
+  { company:"Gap Inc.", role:"Designer, Graphics (R210926)", salute:"Gap", location:"", fit:74, stage:"Applied", applied:"Jun 14, 2026", next:"Follow up ~Jun 28", link:"",
+    companyDesc:"Gap Inc. is a global apparel retailer whose brands include Gap, Old Navy, Banana Republic, and Athleta — large-scale, product-driven design at every level.",
+    roleDesc:"A Designer, Graphics role typically covers graphic and apparel design for product or brand marketing within one of the brands. Solid apparel fit.",
+    hook:"What excites me about Gap is designing at real scale for a brand woven into American culture, where strong graphic systems reach a huge audience." },
+
+  { company:"Fanatics Collectibles", role:"Graphic Designer II", salute:"Fanatics Collectibles", location:"", fit:72, stage:"Applied", applied:"Jun 23, 2026", next:"Follow up ~Jul 7", link:"",
+    companyDesc:"Fanatics Collectibles is the trading-cards and collectibles arm of Fanatics (now home to Topps) — sports, packaging, and licensed brand design at scale.",
+    roleDesc:"A Graphic Designer II designs collectibles, packaging, and brand and marketing assets. Mid-level production design with a sports and licensing flavor.",
+    hook:"What excites me about Fanatics Collectibles is the sports side: I've always wanted to design in and around sports, and collectibles are where brand, packaging, and fandom meet in something tangible fans hold onto." },
+
+  { company:"Rockstar Games", role:"Graphic Designer", salute:"Rockstar", location:"", fit:70, stage:"Applied", applied:"Jun 22, 2026", next:"Follow up ~Jul 6", link:"",
+    companyDesc:"Rockstar Games is the legendary studio behind Grand Theft Auto and Red Dead Redemption (part of Take-Two). World-class brand and marketing craft with a very high bar.",
+    roleDesc:"A Graphic Designer supports marketing and brand graphics, promotional design, and key art. A prestige name, a stretch into games, but the brand craft aligns.",
+    hook:"What excites me about Rockstar is the bar you set for visual craft. In full honesty, I wasn't a gamer growing up, I was the kid on Photoshop. But that's exactly why I care so much about the design itself, and Rockstar's work is some of the best there is." },
+
+  { company:"Saylor", role:"Art Director", salute:"Saylor", location:"LA (hybrid)", fit:82, stage:"To Apply", applied:"", next:"Send application", link:"", verify:true,
+    companyDesc:"Saylor is an LA-based creative agency known for bold brand and entertainment marketing campaigns across film, TV, and consumer brands.",
+    roleDesc:"Provides visual and creative direction for brand and entertainment marketing campaigns, partnering with creative directors and guiding execution — your north-star AD title, in exactly your world.",
+    hook:"What excites me about Saylor is directing bold brand and entertainment work, the kind of high-craft campaign design I already live in day to day at SixTwentySix." },
+
+  { company:"LA Lakers", role:"Senior Brand Design Manager", salute:"the Lakers", location:"El Segundo", fit:82, stage:"To Apply", applied:"", next:"Send application", link:"https://www.entertainmentcareers.net/los-angeles-lakers/senior-brand-design-manager/job/521330/", verify:true,
+    companyDesc:"The Los Angeles Lakers are one of the most iconic franchises in sports, with a global brand spanning game presentation, merch, social, and marketing out of their El Segundo facility.",
+    roleDesc:"Leads brand design across the franchise's visual identity — campaigns, social, and in-arena. A senior, brand-leadership role at a marquee LA sports brand, local to you.",
+    hook:"What excites me about the Lakers is that working in sports has been a goal of mine for as long as I can remember. Shaping the visual identity of one of the most iconic brands in the game would be a genuine dream." },
+
+  { company:"Sony Pictures", role:"Senior Designer, TV Creative Marketing", salute:"Sony Pictures", location:"Culver City", fit:80, stage:"To Apply", applied:"", next:"Send application", link:"https://www.entertainmentcareers.net/sony-pictures/senior-designer-television-creative-marketing/job/520947/", verify:true,
+    companyDesc:"Sony Pictures is a major film and television studio. Its creative marketing team designs the campaigns, key art, and brand materials that launch shows and films, based in Culver City.",
+    roleDesc:"A Senior Designer on TV creative marketing designs key art and campaign assets for series — entertainment design at a major studio, minutes from SixTwentySix.",
+    hook:"What excites me about Sony Pictures is the chance to design for film. Making movie posters and key art is something I've wanted to do since I was young, and creative marketing is exactly that craft." },
+
+  { company:"Jaanuu", role:"Art Director", salute:"Jaanuu", location:"LA (hybrid)", fit:80, stage:"To Apply", applied:"", next:"Send application", link:"https://www.builtinla.com/job/art-director/9671800", verify:true,
+    companyDesc:"Jaanuu is an LA-based premium apparel brand (modern medical and lifestyle wear) with a strong ecommerce and brand presence.",
+    roleDesc:"An Art Director here leads visual direction across brand, campaign, and ecommerce — a senior apparel design role, hybrid in LA, squarely in your lane.",
+    hook:"What excites me about Jaanuu is leading art direction for a premium apparel brand, blending brand storytelling with the product-driven design I love." },
+
+  { company:"Movement Strategy", role:"Senior Art Director", salute:"Movement Strategy", location:"Remote / LA", fit:78, stage:"To Apply", applied:"", next:"Send application", link:"https://www.entertainmentcareers.net/job/senior-art-director/9591001", verify:true,
+    companyDesc:"Movement Strategy is a social-first creative agency building campaigns for major brands across social platforms.",
+    roleDesc:"A Senior Art Director concepts and leads social-first creative campaigns — a senior title, remote-friendly, at the fast campaign pace you already work in.",
+    hook:"What excites me about Movement Strategy is concepting social-first campaigns that actually move culture, leading ideas from concept through to the feed." },
+
+  { company:"Variety", role:"Senior Art Director", salute:"Variety", location:"LA", fit:78, stage:"To Apply", applied:"", next:"Send application", link:"", verify:true,
+    companyDesc:"Variety is the iconic entertainment-industry media brand covering film, TV, and music. Its design team shapes the visual language of a storied publication and its events.",
+    roleDesc:"A Senior Art Director shapes Variety's visual identity across editorial, digital, and events — a senior brand role at a name everyone in entertainment knows.",
+    hook:"What excites me about Variety is shaping the visual language of an iconic entertainment brand: film, TV, and music are the worlds I've always wanted my design to live in." },
+
+  { company:"THE·TEAM", role:"Art Director", salute:"THE·TEAM", location:"LA", fit:76, stage:"To Apply", applied:"", next:"Send application", link:"https://www.entertainmentcareers.net/job/art-director/9781505", verify:true,
+    companyDesc:"THE·TEAM is a creative agency producing standout visuals across social, web, and presentations for brand clients.",
+    roleDesc:"An Art Director concepts and produces visuals across social, web, and presentation design — presentation design being a core strength of yours.",
+    hook:"What excites me about THE·TEAM is producing standout visuals across social, web, and presentations, which is exactly the range I work across every day." },
+
+  { company:"Serato", role:"Art Director", salute:"Serato", location:"LA", fit:72, stage:"To Apply", applied:"", next:"Send application", link:"https://www.entertainmentcareers.net/job/art-director/9247678", verify:true,
+    companyDesc:"Serato is a music-software company behind industry-standard DJ tools, with a brand rooted in music culture.",
+    roleDesc:"An Art Director leads brand and product visuals for a music-tech brand — design at the intersection of music and technology, both worlds you work in.",
+    hook:"What excites me about Serato is that it sits right where music and technology meet, which is exactly my zone. I grew up wanting to make album covers, and I've always explored platform and app development on the side, so designing for a music-software brand genuinely feels like home." },
+
+  { company:"AMIRI", role:"Brand Graphic Designer", salute:"Amiri", location:"LA (in-office)", fit:82, stage:"To Apply", applied:"", posted:"Jun 24, 2026", src:"Built In LA", next:"Send application", link:"https://builtin.com/job/brand-graphic-designer/9890982", verify:true,
+    companyDesc:"Amiri is an LA-born luxury fashion house known for its rock-and-roll-inflected ready-to-wear and a fast-growing global brand presence.",
+    roleDesc:"A Brand Graphic Designer creates visual assets across digital, print, and retail — mid-level apparel design, in-office in LA, right in your lane.",
+    hook:"What excites me about Amiri is designing for a luxury fashion brand with real attitude, the kind of apparel and brand work I already love doing." },
+
+  { company:"Sundance Film Festival", role:"Graphic Designer", salute:"Sundance", location:"Remote", fit:80, stage:"To Apply", applied:"", posted:"Jun 23, 2026", src:"EntertainmentCareers", next:"Send application", link:"https://www.entertainmentcareers.net/sundance-film-festival/graphic-designer/job/524005/", verify:true,
+    companyDesc:"The Sundance Film Festival is the premier showcase for independent film, with a brand that reaches the entire film world each year.",
+    roleDesc:"A Graphic Designer creates campaign and brand materials for the festival — remote, and a direct line into the film world.",
+    hook:"What excites me about Sundance is designing for film at its most exciting edge. Building the visual world around independent cinema is exactly the kind of work I've always wanted to do." },
+
+  { company:"Disney Entertainment Television", role:"Broadcast Graphic Designer", salute:"Disney", location:"Glendale", fit:80, stage:"To Apply", applied:"", posted:"Jun 8, 2026", src:"EntertainmentCareers", next:"Send application", link:"https://www.entertainmentcareers.net/disney-entertainment-television/broadcast-graphic-designer/job/517058/", verify:true,
+    companyDesc:"Disney Entertainment Television produces and markets series across Disney's networks and streaming, with design teams crafting broadcast and brand graphics at huge scale.",
+    roleDesc:"A Broadcast Graphic Designer designs on-air and brand graphics for television — entertainment design at one of the most iconic companies in the world, local in Glendale.",
+    hook:"What excites me about Disney is designing for storytelling at the highest level, bringing my craft to one of the most iconic entertainment brands there is." },
+
+  { company:"Insomniac (Events)", role:"Graphic Designer, Events", salute:"Insomniac", location:"LA (in-office)", fit:80, stage:"To Apply", applied:"", posted:"Jun 21, 2026", src:"Built In LA", next:"Send application", link:"https://builtin.com/job/insomniac-clubs-graphic-designer/9465469", verify:true,
+    companyDesc:"Insomniac produces the world's biggest electronic-music festivals and club experiences, branding those events across digital and print.",
+    roleDesc:"A Graphic Designer brands events across digital and print — music-festival design in LA, a notch more attainable than the senior apparel role you already applied to.",
+    hook:"What excites me about Insomniac is designing for live electronic music, the kind of culture I moved to LA to be part of." },
+
+  { company:"Madhappy", role:"Associate Graphic Designer", salute:"Madhappy", location:"LA (in-office)", fit:78, stage:"To Apply", applied:"", posted:"Jun 23, 2026", src:"Built In LA", next:"Send application", link:"https://builtin.com/job/associate-graphic-designer/9873230", verify:true,
+    companyDesc:"Madhappy is an LA-based optimistic streetwear brand with a strong community and a mental-health mission, known for elevated basics and collabs.",
+    roleDesc:"An Associate Graphic Designer works on apparel graphics and techpacks for seasonal collections — hands-on apparel design at a beloved LA brand.",
+    hook:"What excites me about Madhappy is the mix of apparel craft and a brand that actually stands for something, designing collections people genuinely connect with." },
+
+  { company:"hello82", role:"Graphic Designer", salute:"hello82", location:"LA (in-office)", fit:76, stage:"To Apply", applied:"", posted:"Jun 14, 2026", src:"Built In LA", next:"Send application", link:"https://builtin.com/job/graphic-designer/8182828", verify:true,
+    companyDesc:"hello82 is an LA-based entertainment company at the center of K-pop and Asian pop culture, producing content and experiences for global music fans.",
+    roleDesc:"A Graphic Designer creates social and digital brand visuals around K-pop artists and culture — music-fan design with a global audience.",
+    hook:"What excites me about hello82 is designing around music fandom and artist culture, which ties straight back to my dream of designing for artists." },
+
+  { company:"Opus Agency", role:"Graphic Designer", salute:"Opus", location:"Remote", fit:74, stage:"To Apply", applied:"", posted:"Jun 24, 2026", src:"LinkedIn (your saved)", next:"Send application", link:"https://www.linkedin.com/my-items/saved-jobs/", verify:true,
+    companyDesc:"Opus Agency is an experiences agency producing major brand events and activations for global tech and enterprise clients.",
+    roleDesc:"A Graphic Designer supports brand and event design — remote, in-range, with an experiential bent that fits your background.",
+    hook:"What excites me about Opus is designing for live brand experiences and events, which connects right back to the experiential work I love." },
+
+  { company:"Tennis Channel", role:"Freelance Graphic Designer", salute:"Tennis Channel", location:"Santa Monica", fit:72, stage:"To Apply", applied:"", posted:"Jun 10, 2026", src:"EntertainmentCareers", next:"Send application", link:"https://www.entertainmentcareers.net/tennis-channel/freelance-graphic-designer/job/522874/", verify:true,
+    companyDesc:"Tennis Channel is the leading network dedicated to tennis, covering the sport's biggest tournaments and stories.",
+    roleDesc:"A Freelance Graphic Designer creates brand and broadcast graphics for the network — a sports-design foot in the door, in Santa Monica.",
+    hook:"What excites me about Tennis Channel is that it's sports design, and working in sports has been a goal of mine for a long time." },
+
+  { company:"VML", role:"Art Director", salute:"VML", location:"Chicago (hybrid)", fit:76, stage:"To Apply", applied:"", posted:"~May 27, 2026", src:"LinkedIn (your saved)", next:"Send application", link:"https://www.linkedin.com/my-items/saved-jobs/", verify:true,
+    companyDesc:"VML is one of the world's largest creative and marketing agencies, working with global brands across advertising and experience.",
+    roleDesc:"An Art Director leads creative direction on brand campaigns — your north-star title at a major agency (this one's Chicago, hybrid, so a relocation).",
+    hook:"What excites me about VML is the scale and variety of the work, and the chance to step into art direction across big brand campaigns." },
+
+  { company:"Grey", role:"Art Director", salute:"Grey", location:"New York", fit:76, stage:"To Apply", applied:"", posted:"~Jun 3, 2026", src:"LinkedIn (your saved)", next:"Send application", link:"https://www.linkedin.com/my-items/saved-jobs/", verify:true,
+    companyDesc:"Grey is a storied global advertising agency behind decades of iconic brand campaigns.",
+    roleDesc:"An Art Director concepts and leads campaign creative — your north-star title at a legendary agency (NYC, a relocation).",
+    hook:"What excites me about Grey is its legacy of iconic campaigns, and the chance to grow as an art director among people who set the standard." },
+
+  { company:"MAS", role:"Associate Art Director, Spatial", salute:"the MAS team", location:"Remote", fit:76, stage:"To Apply", applied:"", posted:"~Jun 17, 2026", src:"LinkedIn (your saved)", next:"Send application", link:"https://www.linkedin.com/my-items/saved-jobs/", verify:true,
+    companyDesc:"MAS is a creative studio focused on spatial and experiential design, building physical brand experiences.",
+    roleDesc:"An Associate Art Director, Spatial helps lead experiential and environmental design — remote, and a strong match for your hands-on experiential work.",
+    hook:"What excites me about MAS is the spatial, experiential side of design. I independently designed and executed the LAist Gala experience, and I'd love to do more work that lives in the real world." },
+
+  { company:"Edition Studios", role:"Junior Designer", salute:"Edition Studios", location:"Minneapolis", fit:66, stage:"To Apply", applied:"", posted:"~Jun 10, 2026", src:"LinkedIn (your saved)", next:"Send application", link:"https://www.linkedin.com/my-items/saved-jobs/", verify:true,
+    companyDesc:"Edition Studios is a design studio producing brand and visual work for clients, based in Minneapolis.",
+    roleDesc:"A Junior Designer supports brand and visual projects — an in-range role you saved (would mean relocating).",
+    hook:"What excites me about Edition Studios is the focused, craft-driven studio environment where I could keep sharpening my brand work." },
+
+  { company:"Million Dollar Baby Co.", role:"Graphic Designer", salute:"the Million Dollar Baby team", location:"LA (hybrid)", fit:66, stage:"To Apply", applied:"", posted:"~Jun 4, 2026", src:"Built In LA", next:"Send application", link:"https://builtin.com/job/graphic-designer/9623961", verify:true,
+    companyDesc:"Million Dollar Baby Co. is a family of modern kids' and family furniture and lifestyle ecommerce brands based in LA.",
+    roleDesc:"A Graphic Designer works across digital, social, email, web, retail, and print for the brand family — broad mid-level design, hybrid in LA.",
+    hook:"What excites me about Million Dollar Baby is the range, getting to design across digital, retail, and print for a brand family with real reach." },
+
+  { company:"Iris North America", role:"Design Internship", salute:"Iris", location:"New York (hybrid)", fit:62, stage:"To Apply", applied:"", posted:"~Jun 3, 2026", src:"LinkedIn (your saved)", next:"Send application", link:"https://www.linkedin.com/my-items/saved-jobs/", verify:true,
+    companyDesc:"Iris is a global creative agency building brand and campaign work for major clients, with a NYC office.",
+    roleDesc:"A Design Internship supports the creative team on live brand work — below your current level, but you saved it, so it's here.",
+    hook:"What excites me about Iris is the calibre of brand work and the chance to learn inside a sharp creative team." },
+];
+
+// Bulk-added from job boards (Built In LA + EntertainmentCareers), Jun 24 2026.
+// Compact entries — cover letters generate from generic fallbacks; tell Claude to tailor any one.
+const MORE = [
+  {company:"Creative Artists Agency", role:"Experiential Designer, Brand Consulting", location:"LA", fit:80, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/experiential-designer-brand-consulting/9768365"},
+  {company:"United Talent Agency", role:"Marketing Designer", location:"LA", fit:78, posted:"Jun 11, 2026", src:"Built In LA", link:"https://builtin.com/job/marketing-designer/9120876"},
+  {company:"Mattel", role:"Brand Designer, Vehicles Brand Creative", location:"El Segundo", fit:78, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/brand-designer-vehicles-brand-creative/9517781"},
+  {company:"Universal Music Group", role:"Digital Brand Designer", location:"Santa Monica", fit:80, posted:"Jun 22, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/universal-music-group/digital-brand-designer/job/518122/"},
+  {company:"Fabletics", role:"Designer", location:"El Segundo", fit:76, posted:"Jun 22, 2026", src:"Built In LA", link:"https://builtin.com/job/designer/9868997"},
+  {company:"Fabletics", role:"Jr. Graphic Designer", location:"El Segundo", fit:74, posted:"Jun 23, 2026", src:"Built In LA", link:"https://builtin.com/job/jr-graphic-designer/8737550"},
+  {company:"REVOLVE", role:"Jr. Associate Designer", location:"LA", fit:74, posted:"Jun 1, 2026", src:"Built In LA", link:"https://builtin.com/job/jr-associate-designer/9576100"},
+  {company:"Alpinestars", role:"Junior Graphic Designer", location:"Torrance", fit:72, posted:"Jun 22, 2026", src:"Built In LA", link:"https://builtin.com/job/junior-graphic-designer/9230053"},
+  {company:"FAM Brands", role:"Designer, Women's Sportswear", location:"Beverly Hills", fit:72, posted:"Jun 24, 2026", src:"Built In LA", link:"https://builtin.com/job/designer-women-s-sportswear/9556158"},
+  {company:"Vince", role:"Designer, Women's Hard Wovens", location:"LA", fit:70, posted:"Jun 23, 2026", src:"Built In LA", link:"https://builtin.com/job/designer-women-s-hard-wovens/9540749"},
+  {company:"Vibram", role:"Designer, Special Projects", location:"LA", fit:72, posted:"Jun 23, 2026", src:"Built In LA", link:"https://builtin.com/job/designer-special-projects/9686339"},
+  {company:"Gensler", role:"Visual / Graphic Designer", location:"LA", fit:74, posted:"Jun 18, 2026", src:"Built In LA", link:"https://builtin.com/job/visual-graphic-designer/7799725"},
+  {company:"Viral Nation", role:"Presentation & Visual Designer", location:"Remote", fit:76, posted:"Jun 10, 2026", src:"Built In LA", link:"https://builtin.com/job/presentation-visual-designer/9696814"},
+  {company:"Wattpad", role:"Associate Visual Designer (Freelance)", location:"El Segundo", fit:74, posted:"Jun 17, 2026", src:"Built In LA", link:"https://builtin.com/job/associate-visual-designer-freelance/9174781"},
+  {company:"Odys Aviation", role:"Visual Designer", location:"Long Beach", fit:70, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/visual-designer/9221408"},
+  {company:"Happiest Baby", role:"Visual Designer", location:"LA", fit:68, posted:"Jun 11, 2026", src:"Built In LA", link:"https://builtin.com/job/visual-designer/7026417"},
+  {company:"Brand Knew", role:"Senior Visual Designer", location:"LA (hybrid)", fit:70, posted:"Jun 23, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-visual-designer/8508817"},
+  {company:"Rocket Lab", role:"Brand Designer", location:"Long Beach", fit:70, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/brand-designer/9853785"},
+  {company:"SentiLink", role:"Creative Designer", location:"Remote", fit:70, posted:"Jun 23, 2026", src:"Built In LA", link:"https://builtin.com/job/creative-designer/9883689"},
+  {company:"Inngest", role:"Brand Designer", location:"Remote", fit:70, posted:"Jun 23, 2026", src:"Built In LA", link:"https://builtin.com/job/brand-designer/8995689"},
+  {company:"Supabase", role:"Brand Designer", location:"Remote", fit:70, posted:"Jun 22, 2026", src:"Built In LA", link:"https://builtin.com/job/brand-designer/9866537"},
+  {company:"Collier Simon", role:"Freelance Production Designer (Social/Digital)", location:"LA", fit:72, posted:"Jun 7, 2026", src:"Built In LA", link:"https://builtin.com/job/production-designer-socialdigital-ads/3156689"},
+  {company:"Material", role:"Senior Designer, Marketing", location:"LA", fit:66, posted:"Jun 5, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-designer-marketing/9637365"},
+  {company:"Sifted", role:"Marketing & Presentation Designer", location:"Remote", fit:70, posted:"Jun 7, 2026", src:"Built In LA", link:"https://builtin.com/job/marketing-and-presentation-designer/9342425"},
+  {company:"Silhouette America", role:"Marketing Graphic Designer", location:"Beverly Hills", fit:66, posted:"Jun 15, 2026", src:"Built In LA", link:"https://builtin.com/job/marketing-graphic-designer/9757139"},
+  {company:"M&S Consulting", role:"Visual / Print Designer", location:"Pasadena", fit:66, posted:"Jun 3, 2026", src:"Built In LA", link:"https://builtin.com/job/visual-print-designer/9298717"},
+  {company:"EverythingHR", role:"Brand Designer", location:"Santa Monica", fit:66, posted:"Jun 18, 2026", src:"Built In LA", link:"https://builtin.com/job/brand-designer/9834498"},
+  {company:"EverythingHR", role:"Junior Graphic Designer / Social", location:"Santa Monica", fit:64, posted:"Jun 18, 2026", src:"Built In LA", link:"https://builtin.com/job/junior-graphic-designer-social-media-creator/9834494"},
+  {company:"Homebound", role:"Junior Graphic Designer", location:"LA (hybrid)", fit:62, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/junior-graphic-designer/9512625"},
+  {company:"PGAL", role:"Junior Designer", location:"LA", fit:60, posted:"Jun 11, 2026", src:"Built In LA", link:"https://builtin.com/job/junior-designer/9717003"},
+  {company:"Greek House", role:"Social Media Graphic Designer", location:"Remote", fit:66, posted:"Jun 7, 2026", src:"Built In LA", link:"https://builtin.com/job/social-media-graphic-designer/9348920"},
+  {company:"Sociallyin", role:"Social Media Designer", location:"Remote", fit:64, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/social-media-designer/8964360"},
+  {company:"Payscale", role:"Marketing Designer", location:"Remote", fit:62, posted:"Jun 14, 2026", src:"Built In LA", link:"https://builtin.com/job/marketing-designer/9747253"},
+  {company:"Neros Technologies", role:"Marketing Designer", location:"Torrance", fit:62, posted:"Jun 19, 2026", src:"Built In LA", link:"https://builtin.com/job/marketing-designer/9492718"},
+  {company:"Aya Healthcare", role:"Visual Designer", location:"Remote", fit:62, posted:"Jun 16, 2026", src:"Built In LA", link:"https://builtin.com/job/visual-designer/9483156"},
+  {company:"Bask Health", role:"Visual Designer", location:"Remote", fit:62, posted:"Jun 19, 2026", src:"Built In LA", link:"https://builtin.com/job/visual-designer-remote/9191216"},
+  {company:"Everfit", role:"Senior Visual Designer", location:"LA (hybrid)", fit:64, posted:"Jun 11, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-visual-designer/8885324"},
+  {company:"OpusClip", role:"Senior Web / Visual Designer", location:"Remote", fit:64, posted:"Jun 1, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-web-visual-designer/7504811"},
+  {company:"Luma AI", role:"Visual Designer, Product", location:"Remote / Hybrid", fit:64, posted:"Jun 8, 2026", src:"Built In LA", link:"https://builtin.com/job/visual-designer-product/9373448"},
+  {company:"New Era Technology", role:"Senior Visual Designer, Innovation", location:"Remote", fit:62, posted:"Jun 16, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-visual-designer-innovation/9172882"},
+  {company:"Nebius", role:"Communications Designer, Social Media", location:"Remote", fit:64, posted:"Jun 19, 2026", src:"Built In LA", link:"https://builtin.com/job/social-media-communications-designer/8483089"},
+  {company:"Intro", role:"Brand Designer, Marketing (Contract)", location:"Remote", fit:64, posted:"Jun 9, 2026", src:"Built In LA", link:"https://builtin.com/job/graphic-designer-marketing-contract/8117920"},
+  {company:"Refindable", role:"Marketing Designer", location:"Remote", fit:60, posted:"Jun 8, 2026", src:"Built In LA", link:"https://builtin.com/job/marketing-designer/9357286"},
+  {company:"Paxos Labs", role:"3D Motion & Marketing Designer", location:"Remote", fit:60, posted:"Jun 2, 2026", src:"Built In LA", link:"https://builtin.com/job/3d-motion-marketing-designer/8309917"},
+  {company:"Snap Inc.", role:"Senior Designer", location:"LA (hybrid)", fit:70, posted:"Jun 10, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-designer/9513618"},
+  {company:"Marqeta", role:"Senior Brand Designer", location:"Remote", fit:62, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-brand-designer/9284425"},
+  {company:"Circle", role:"Senior Brand Designer, Systems & Motion", location:"LA / Remote", fit:62, posted:"Jun 1, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-brand-designer-systems-motion/9021732"},
+  {company:"LiveKit", role:"Brand Designer, Web", location:"Remote", fit:60, posted:"Jun 23, 2026", src:"Built In LA", link:"https://builtin.com/job/web-designer/8279244"},
+  {company:"Northbeam", role:"Senior Designer, Marketing Brand & Creative", location:"Remote", fit:60, posted:"Jun 16, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-designer-marketing-brand-and-creative/7899492"},
+  {company:"Sequencing.com", role:"Senior Marketing Designer", location:"Remote", fit:58, posted:"Jun 12, 2026", src:"Built In LA", link:"https://builtin.com/job/senior-marketing-designer/9729764"},
+  {company:"Assured", role:"Staff Brand Designer", location:"Remote", fit:56, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/staff-marketing-designer/9272707"},
+  {company:"Yahoo", role:"Lead Visual Designer", location:"Remote", fit:56, posted:"Jun 12, 2026", src:"Built In LA", link:"https://builtin.com/job/lead-visual-designer/8631996"},
+  {company:"Whatnot", role:"Lead Motion Designer", location:"LA / Remote", fit:58, posted:"Jun 21, 2026", src:"Built In LA", link:"https://builtin.com/job/lead-motion-designer/9515327"},
+  {company:"CAA", role:"Experiential Designer", location:"New York", fit:74, posted:"Jun 21, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/caa/experiential-designer/job/523353/"},
+  {company:"NBCUniversal", role:"Graphics Designer", location:"Miami", fit:70, posted:"Jun 4, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/nbcuniversal/graphics-designer/job/522364/"},
+  {company:"Audacy", role:"Graphic Designer, Corporate Marketing", location:"New York", fit:70, posted:"Jun 4, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/audacy/graphic-designer-corporate-marketing/job/522321/"},
+  {company:"Insomniac", role:"Graphic Designer, Signage", location:"Las Vegas", fit:72, posted:"May 25, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/insomniac/graphic-designer-signage/job/509799/"},
+  {company:"Dallas Wings", role:"Graphic Designer", location:"Arlington, TX", fit:70, posted:"Jun 18, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/dallas-wings/graphic-designer/job/523583/"},
+  {company:"Versant", role:"Senior Digital Designer, Sports", location:"Orlando", fit:66, posted:"Jun 19, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/versant/senior-digital-designer-sports/job/523630/"},
+  {company:"Phoenix Suns", role:"Senior Motion Graphic Designer", location:"Phoenix", fit:62, posted:"Jun 10, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/phoenix-suns/senior-motion-graphic-designer/job/522789/"},
+  {company:"Fish Eggs", role:"Entry to Mid Motion Graphics Artist", location:"LA", fit:66, posted:"Jun 22, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/fish-eggs/entry-to-mid-level-motion-graphics-artist/job/523836/"},
+  {company:"Telemundo", role:"Senior 3D Graphic Designer", location:"Miami", fit:58, posted:"Jun 1, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/telemundo/senior-3d-graphic-designer/job/522031/"},
+  {company:"Netflix", role:"Production Design Manager, Brand Creative Studio", location:"LA", fit:60, posted:"Jun 22, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/netflix/production-design-manager-brand-creative-studio/job/520952/"},
+  {company:"Universal Music Group", role:"Digital Creative Director", location:"New York", fit:56, posted:"Jun 22, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/universal-music-group/digital-creative-director/job/520917/"},
+  {company:"Universal Music Group", role:"UI/UX Designer", location:"Philadelphia", fit:62, posted:"Jun 22, 2026", src:"EntertainmentCareers", link:"https://www.entertainmentcareers.net/universal-music-group/ui-ux-designer/job/518434/"},
+  {company:"FAM Brands", role:"Technical Designer, Rockfit", location:"Beverly Hills", fit:64, posted:"Jun 24, 2026", src:"Built In LA", link:"https://builtin.com/job/technical-designer-rockfit/9553910"},
+  {company:"Vince", role:"Technical Designer, Men's Knits", location:"LA", fit:62, posted:"Jun 23, 2026", src:"Built In LA", link:"https://builtin.com/job/technical-designer-men-s-knits/9540736"},
+  {company:"Million Dollar Baby Co.", role:"Softgoods Product Designer", location:"LA (hybrid)", fit:64, posted:"Jun 24, 2026", src:"Built In LA", link:"https://builtin.com/job/softgoods-product-designer/9554268"},
+];
+MORE.forEach(m=>{ m.salute=m.company; m.stage="To Apply"; m.applied=""; m.next="Send application"; m.verify=true; m.auto=true; });
+JOBS.push(...MORE);
+const GENERATED = "Wednesday, June 24, 2026";
+const SUPA_URL = "https://hddmapjmagcingndkmwc.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhkZG1hcGptYWdjaW5nbmRrbXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMTg0ODQsImV4cCI6MjA5MTc5NDQ4NH0.tWPs373Oza9TMgCZeC2cJqQU_obqjZMITC6KGaA8w8Q";
+/* ============== */
+
+document.getElementById("date").textContent = GENERATED + "  ·  synced from your Gmail";
+
+function buildLetter(j){
+  return `Joel Cormack
+Graphic Designer · Los Angeles, CA
+https://joelcormackdesign.com
+
+Dear ${j.salute||j.company},
+
+I'm a Visual Designer currently based in Los Angeles, where I work at SixTwentySix developing creative treatments, campaign presentations, and visual systems for major commercial projects.
+
+Over the past year, I've had the opportunity to contribute to work for brands including Amazon, Samsung, Dunkin', Priceline, Heineken, and ESPN, and various large recording artists while also serving as part of the core creative team that helped secure the LA28 Olympic & Paralympic Games account. My work sits at the intersection of advertising, branding, production, and emerging creative technology, and I enjoy building ideas from concept through execution.
+
+${j.hook||('What excites me about '+j.company+' is the chance to bring strong visual craft, real range across disciplines, and genuine passion for design to a team doing work I would be proud to contribute to.')} I love moving between disciplines, whether that's pitching and building presentation systems, designing apparel, working on web design, or helping make commercials and music videos with A-list talent, alongside the AI-assisted workflows I build to help creative teams move faster.
+
+My background has given me experience not only designing the work itself, but also understanding how ideas are developed, pitched, produced, and ultimately brought to life. I think that combination of design thinking and production awareness allows me to contribute beyond a single discipline.
+
+I'd love the opportunity to bring that perspective to your team and continue growing alongside talented people who care deeply about making great work.
+
+Thank you for your time and consideration.
+
+Best,
+Joel`;
+}
+
+// ----- stable ids + deletion (persisted to your browser) -----
+JOBS.forEach((j,i)=>{ j._i=i; j._id=j.company+'|||'+j.role; });
+let deleted = new Set(JSON.parse(localStorage.getItem('jobsDeleted')||'[]'));
+function persistDeleted(){ try{ localStorage.setItem('jobsDeleted', JSON.stringify([...deleted])); }catch(e){} }
+const liveJobs = () => JOBS.filter(j=>!deleted.has(j._id));
+
+// realistic level for Joel (Visual / Graphic Designer, early career)
+function levelOf(j){
+  const r=(j.role||"").toLowerCase();
+  if(r.includes("senior art director")||r.includes("creative director")||r.includes("design director")||r.includes("design manager")||r.includes("manager")||r.includes("director of")||r.includes("lead ")||r.startsWith("lead")||r.includes("staff ")||r.includes("principal")||r.includes("head of")) return {label:"Too senior",cls:"senior"};
+  if(r.includes("art director")) return {label:"Reach",cls:"reach"};
+  if(r.includes("senior")) return {label:"Reach",cls:"reach"};
+  return {label:"In range",cls:"range"};
+}
+function sortFit(j){ return j.fit - (levelOf(j).cls==="senior"?40:0); }
+
+function renderStats(){
+  const live=liveJobs();
+  const toApply=live.filter(j=>j.stage==="To Apply").length;
+  const conf=live.filter(j=>(j.next||"").includes("⚠️")).length;
+  const app=live.filter(j=>j.stage==="Applied"&&!(j.next||"").includes("⚠️")).length;
+  document.getElementById("stats").innerHTML = `
+    <div class="st"><span class="n">${live.length}</span><span class="l">Total</span></div>
+    <div class="st"><span class="n">${toApply}</span><span class="l">Ready to send</span></div>
+    <div class="st"><span class="n">${app}</span><span class="l">Applied</span></div>
+    <div class="st"><span class="n">${conf}</span><span class="l">To confirm</span></div>`;
+  document.getElementById("cnt-prospects").textContent = live.filter(j=>j.stage==="To Apply").length;
+  document.getElementById("cnt-applied").textContent = live.filter(j=>j.stage!=="To Apply").length;
+}
+const HINTS = {
+  prospects:"Ready to send — open each for a company brief and a custom cover letter, then apply.",
+  applied:"Already out the door — waiting to hear back. Two still need you to confirm you submitted.",
+  suggestions:"Jobs your dad (or anyone you share this with) spotted for you. Paste one below and it joins the board."
+};
+function cardHTML(j){
+  const warn=(j.next||"").includes("⚠️"); const lv=levelOf(j);
+  return `<div class="card" onclick="openJob(${j._i})">
+    <div class="top"><div><div class="co">${j.company}</div><div class="ro">${j.role}</div>${j.posted?`<div class="posted">Posted ${j.posted}${j.src?' · '+j.src:''}</div>`:''}</div>
+      <span class="fitb ${j.fit<85?'mid':''}">${j.fit}</span></div>
+    <div class="foot">
+      ${warn?'<span class="lvl lvl-senior">⚠ Confirm</span>':`<span class="lvl lvl-${lv.cls}">${lv.label}</span>`}
+      <span class="footr"><span class="open">Open <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><button class="del" title="Remove from board" onclick="event.stopPropagation();deleteJob(${j._i})">Remove</button></span>
+    </div></div>`;
+}
+function industryOf(j){
+  const c=(j.company||'').toLowerCase();
+  const has=arr=>arr.some(x=>c.includes(x));
+  if(has(['universal music','roc nation','serato','insomniac','hello82','audacy','live nation'])) return 'Music';
+  if(has(['kith','alo','ralph lauren','gap','amiri','madhappy','fabletics','alpinestars','revolve','fam brands','vince','vibram','jaanuu'])) return 'Apparel & Fashion';
+  if(has(['sony pictures','disney','sundance','nbcuniversal','telemundo','netflix','variety','fish eggs','versant','smosh','wattpad'])) return 'Film & TV';
+  if(has(['lakers','fanatics','tennis channel','dallas wings','phoenix suns','orlando magic'])) return 'Sports';
+  if(has(['rockstar'])) return 'Games';
+  if(has(['dentsu','saatchi','saylor','movement strategy','the·team','the team','vml','grey','iris','mas','opus','caa','united talent','material','collier simon','viral nation','sociallyin','gensler','edition studios','brand knew'])) return 'Agency';
+  return 'Tech & Other';
+}
+
+let curTab="prospects", curInd="All";
+const activeSet=()=>liveJobs().filter(j=> curTab==="prospects" ? j.stage==="To Apply" : j.stage!=="To Apply").sort((a,b)=>sortFit(b)-sortFit(a));
+function renderFilters(){
+  const set=activeSet(), counts={};
+  set.forEach(j=>{const i=industryOf(j); counts[i]=(counts[i]||0)+1;});
+  const inds=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+  document.getElementById("filters").innerHTML=['All',...inds].map(c=>{
+    const n=c==='All'?set.length:counts[c];
+    return `<span class="fchip ${c===curInd?'on':''}" onclick="setIndustry('${c.replace(/&/g,'&amp;')}')">${c} <b>${n}</b></span>`;
+  }).join("");
+}
+function renderGrid(){
+  let set=activeSet();
+  if(curInd!=='All') set=set.filter(j=>industryOf(j)===curInd);
+  document.getElementById("grid").innerHTML=set.map(cardHTML).join("");
+}
+window.setIndustry=function(i){ curInd=i.replace(/&amp;/g,'&'); renderFilters(); renderGrid(); };
+function switchTab(tab){
+  curTab=tab; curInd="All";
+  ["prospects","applied","suggestions"].forEach(t=>document.getElementById("tab-"+t).classList.toggle("on",tab===t));
+  document.getElementById("tabhint").textContent = HINTS[tab]||"";
+  renderStats();
+  const sg=document.getElementById("suggest"), gr=document.getElementById("grid"), fl=document.getElementById("filters");
+  if(tab==="suggestions"){ fl.style.display="none"; gr.style.display="none"; sg.style.display="block"; renderSuggest(); loadSuggestions(); }
+  else { fl.style.display="flex"; gr.style.display="grid"; sg.style.display="none"; renderFilters(); renderGrid(); }
+}
+
+// ---- From Dad: shared suggestions via Supabase ----
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function host(u){try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){return u||'';}}
+async function loadSuggestions(){
+  try{
+    const r=await fetch(SUPA_URL+"/rest/v1/job_suggestions?select=*&order=created_at.desc",{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}});
+    const d=await r.json(); window._sugg=Array.isArray(d)?d:[];
+  }catch(e){ window._sugg=window._sugg||[]; }
+  const c=document.getElementById("cnt-suggest"); if(c) c.textContent=(window._sugg||[]).length;
+  if(curTab==="suggestions") renderSuggest();
+}
+function renderSuggest(){
+  const list=window._sugg||[];
+  document.getElementById("suggest").innerHTML=`
+    <div class="sform">
+      <div class="sf-title">Add a job for Joel</div>
+      <div class="sf-sub">See a listing he'd like? Paste it here and it lands on his board, tagged from you.</div>
+      <input id="su-url" class="sf-in" placeholder="Paste the job posting URL *">
+      <div class="sf-row"><input id="su-co" class="sf-in" placeholder="Company (optional)"><input id="su-name" class="sf-in" placeholder="Your name" value="Dad"></div>
+      <textarea id="su-note" class="sf-in" placeholder="Why you like it (optional)"></textarea>
+      <button class="sf-btn" onclick="submitSuggestion()">Add to Joel's board</button>
+      <div class="sf-msg" id="su-msg"></div>
+    </div>
+    <div class="seclabel" style="margin-top:34px">Suggested jobs (${list.length})</div>
+    <div class="grid">${list.length?list.map(s=>`
+      <div class="card" onclick="window.open('${esc(s.url).replace(/'/g,'%27')}','_blank')">
+        <div class="top"><div><div class="co">${esc(s.company||host(s.url))}</div><div class="ro">${esc(s.note||'Suggested job')}</div>${s.created_at?`<div class="posted">${new Date(s.created_at).toLocaleDateString()}</div>`:''}</div>
+          <span class="fitb mid">from ${esc(s.tagged_by||'Dad')}</span></div>
+        <div class="foot"><span class="lvl lvl-reach">Suggestion</span><span class="open">Open <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span></div>
+      </div>`).join(''):'<div style="color:var(--faint);font-size:14px;padding:18px 2px">No suggestions yet. Paste a job above and it shows up here for both of you.</div>'}</div>`;
+}
+window.submitSuggestion=async function(){
+  const urlEl=document.getElementById("su-url"), msg=document.getElementById("su-msg");
+  const url=(urlEl.value||"").trim();
+  if(!url){ msg.textContent="Please paste a URL first."; msg.style.color="#c0392b"; return; }
+  const body={url, company:(document.getElementById("su-co").value||"").trim()||null, note:(document.getElementById("su-note").value||"").trim()||null, tagged_by:(document.getElementById("su-name").value||"").trim()||"Dad"};
+  msg.textContent="Adding…"; msg.style.color="var(--dim)";
+  try{
+    const r=await fetch(SUPA_URL+"/rest/v1/job_suggestions",{method:"POST",headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error(await r.text());
+    msg.textContent="Added ✓ Thanks — it's on Joel's board now."; msg.style.color="#2e7d5b";
+    urlEl.value="";document.getElementById("su-co").value="";document.getElementById("su-note").value="";
+    loadSuggestions();
+  }catch(e){ msg.textContent="Couldn't add it — check the URL and try again."; msg.style.color="#c0392b"; }
+};
+
+window.dismissWelcome=function(){var w=document.getElementById('welcome');if(w)w.style.display='none';try{localStorage.setItem('welcomeHidden','1')}catch(e){}};
+(function(){try{if(localStorage.getItem('welcomeHidden')==='1'){var w=document.getElementById('welcome');if(w)w.style.display='none';}}catch(e){}})();
+
+switchTab("prospects");
+loadSuggestions();
+
+// detail page
+const listEl=document.getElementById("list"), detEl=document.getElementById("detail");
+let lastDeleted=null, toastTimer=null;
+function deleteJob(i){
+  const j=JOBS[i]; if(!j) return;
+  deleted.add(j._id); persistDeleted(); lastDeleted=j._id;
+  if(detEl && detEl.style.display==='block') showList();
+  renderStats(); renderFilters(); renderGrid();
+  const t=document.getElementById('toast');
+  t.innerHTML=`Removed <b>${j.company}</b> — ${j.role} <span class="undo" onclick="undoDelete()">Undo</span>`;
+  t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),6000);
+}
+function undoDelete(){
+  if(!lastDeleted) return;
+  deleted.delete(lastDeleted); persistDeleted(); lastDeleted=null;
+  renderStats(); renderFilters(); renderGrid();
+  document.getElementById('toast').classList.remove('show');
+}
+function openJob(i){
+  const j=JOBS[i]; const warn=(j.next||"").includes("⚠️"); const letter=buildLetter(j); const lv=levelOf(j);
+  detEl.innerHTML=`
+    <div class="back" onclick="showList()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> All prospects</div>
+    <div class="dhead">
+      <div><h1>${j.company}</h1><div class="drole">${j.role}</div></div>
+      <button class="btn danger" onclick="deleteJob(${i})">Remove from board</button>
+    </div>
+    <div class="metarow">
+      <span class="pill fitp"><b>${j.fit}</b> fit</span>
+      <span class="pill"><b>${lv.label}</b> for your level</span>
+      <span class="pill">Stage: <b>${j.stage}</b></span>
+      ${j.applied?`<span class="pill">Applied <b>${j.applied}</b></span>`:""}
+      ${j.posted?`<span class="pill">Posted <b>${j.posted}</b></span>`:""}
+      ${j.location?`<span class="pill"><b>${j.location}</b></span>`:""}
+      <span class="pill"><b>${industryOf(j)}</b></span>
+      ${j.src?`<span class="pill">via <b>${j.src}</b></span>`:""}
+    </div>
+    <div class="cols">
+      <div>
+        <div class="panel"><h3>About the company</h3><p>${j.companyDesc||'Quick-added from a job board — open the posting (button below) for the full company description.'}</p></div>
+        <div class="panel"><h3>What the role does</h3><p>${j.roleDesc||(j.role+'. Open the posting (button below) for the full responsibilities.')}</p>${j.auto?'<div class="tbd">ⓘ Quick-added from a board — the cover letter below is a strong generic draft in your voice. Tell me to tailor it for this role and I will.</div>':''}${j.tbd?`<div class="tbd">ⓘ Overview from general knowledge — say the word and I'll pull the live job description.</div>`:""}${lv.cls==="senior"?`<div class="tbd" style="color:var(--amber)">⚠ This is a Senior Art Director / manager-level role — likely a stretch from where you are now (Visual / Graphic Designer). Only worth it as a long shot.</div>`:""}</div>
+        <div class="panel"><h3>Next step</h3><p class="nextline" style="${warn?'color:var(--amber);font-weight:600':''}">${j.next}</p>
+          ${j.link?`<div style="margin-top:14px"><a class="copybtn" style="display:inline-flex;text-decoration:none" href="${j.link}" target="_blank">Open posting <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>`:""}
+          ${j.verify?`<div class="tbd">ⓘ Auto-found posting — double-check it's still live before applying.</div>`:""}</div>
+      </div>
+      <div class="panel letterpanel">
+        <div class="letterhead"><span class="lt">Custom cover letter</span>
+          <button class="copybtn" id="copybtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg> Copy</button></div>
+        <div class="letter" id="lettertext">${letter.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>
+        <div class="letternote">Tailored from your MASTER 2 letter for ${j.company}. Review, then paste into your application or email and send.</div>
+      </div>
+    </div>`;
+  document.getElementById("copybtn").onclick=()=>copyLetter(letter);
+  listEl.style.display="none"; detEl.style.display="block"; window.scrollTo(0,0);
+}
+function showList(){ detEl.style.display="none"; listEl.style.display="block"; window.scrollTo(0,0); }
+function copyLetter(text){
+  const done=()=>{const b=document.getElementById("copybtn");b.classList.add("done");b.innerHTML="Copied ✓";setTimeout(()=>{b.classList.remove("done");b.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg> Copy';},1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>fallback(text,done));}
+  else fallback(text,done);
+}
+function fallback(text,cb){const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(e){}document.body.removeChild(ta);cb();}
+// quick-copy chips
+document.querySelectorAll(".qchip").forEach(chip=>{
+  chip.addEventListener("click",()=>{
+    const val=chip.getAttribute("data-copy");
+    const flash=()=>{chip.classList.add("copied");const k=chip.querySelector(".qk").textContent;chip.querySelector(".qk").textContent="Copied";setTimeout(()=>{chip.classList.remove("copied");chip.querySelector(".qk").textContent=k;},1400);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(val).then(flash).catch(()=>fallback(val,flash));}
+    else fallback(val,flash);
+  });
+});
+
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&detEl.style.display==="block")showList();});
+</script>
+</body>
+</html>
