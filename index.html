@@ -179,6 +179,15 @@
   .del{display:none;font-size:11px;font-weight:600;color:#c0392b;background:rgba(192,57,43,.08);border:0.5px solid rgba(192,57,43,.22);border-radius:7px;padding:3px 9px;cursor:pointer;transition:.15s}
   .card:hover .del{display:inline-block}
   .del:hover{background:#c0392b;color:#fff;border-color:#c0392b}
+  .actbtn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;
+    border:0.5px solid var(--hair);background:var(--glass);cursor:pointer;transition:.15s;color:var(--dim);padding:0}
+  .actbtn svg{width:16px;height:16px}
+  .actbtn.check:hover{background:#2e7d5b;border-color:#2e7d5b;color:#fff}
+  .actbtn.x:hover{background:#c0392b;border-color:#c0392b;color:#fff}
+  .actbtn.check.on{background:#2e7d5b;border-color:#2e7d5b;color:#fff}
+  .actbtn.check.on:hover{background:#256b4d;border-color:#256b4d}
+  .card.isdone{opacity:.62}
+  .card.isdone:hover{opacity:1}
   .btn{font-size:13px;font-weight:600;border-radius:11px;padding:9px 15px;border:0.5px solid var(--edge);background:rgba(255,255,255,.6);color:var(--ink);cursor:pointer;transition:.15s}
   .btn:hover{background:#fff}
   .btn.danger{color:#c0392b}
@@ -578,6 +587,15 @@ JOBS.forEach((j,i)=>{ j._i=i; j._id=j.company+'|||'+j.role; });
 let deleted = new Set(JSON.parse(localStorage.getItem('jobsDeleted')||'[]'));
 function persistDeleted(){ try{ localStorage.setItem('jobsDeleted', JSON.stringify([...deleted])); }catch(e){} }
 const liveJobs = () => JOBS.filter(j=>!deleted.has(j._id));
+// ----- applied status (persisted to your browser) -----
+let appliedSet = new Set(JSON.parse(localStorage.getItem('jobsApplied')||'[]'));
+function persistApplied(){ try{ localStorage.setItem('jobsApplied', JSON.stringify([...appliedSet])); }catch(e){} }
+// a job counts as "Applied" if you checked it off, or it shipped with that stage
+const stageOf = (j) => appliedSet.has(j._id) ? "Applied" : (j.stage||"To Apply");
+// ----- From Dad suggestions: your local organizing (applied / removed), per-browser -----
+let suggApplied = new Set(JSON.parse(localStorage.getItem('suggApplied')||'[]'));
+let suggDismissed = new Set(JSON.parse(localStorage.getItem('suggDismissed')||'[]'));
+function persistSugg(){ try{ localStorage.setItem('suggApplied', JSON.stringify([...suggApplied])); localStorage.setItem('suggDismissed', JSON.stringify([...suggDismissed])); }catch(e){} }
 
 // realistic level for Joel (Visual / Graphic Designer, early career)
 function levelOf(j){
@@ -591,16 +609,16 @@ function sortFit(j){ return j.fit - (levelOf(j).cls==="senior"?40:0); }
 
 function renderStats(){
   const live=liveJobs();
-  const toApply=live.filter(j=>j.stage==="To Apply").length;
+  const toApply=live.filter(j=>stageOf(j)==="To Apply").length;
   const conf=live.filter(j=>(j.next||"").includes("⚠️")).length;
-  const app=live.filter(j=>j.stage==="Applied"&&!(j.next||"").includes("⚠️")).length;
+  const app=live.filter(j=>stageOf(j)==="Applied").length;
   document.getElementById("stats").innerHTML = `
     <div class="st"><span class="n">${live.length}</span><span class="l">Total</span></div>
     <div class="st"><span class="n">${toApply}</span><span class="l">Ready to send</span></div>
     <div class="st"><span class="n">${app}</span><span class="l">Applied</span></div>
     <div class="st"><span class="n">${conf}</span><span class="l">To confirm</span></div>`;
-  document.getElementById("cnt-prospects").textContent = live.filter(j=>j.stage==="To Apply").length;
-  document.getElementById("cnt-applied").textContent = live.filter(j=>j.stage!=="To Apply").length;
+  document.getElementById("cnt-prospects").textContent = live.filter(j=>stageOf(j)==="To Apply").length;
+  document.getElementById("cnt-applied").textContent = live.filter(j=>stageOf(j)!=="To Apply").length;
 }
 const HINTS = {
   prospects:"Ready to send — open each for a company brief and a custom cover letter, then apply.",
@@ -609,12 +627,16 @@ const HINTS = {
 };
 function cardHTML(j){
   const warn=(j.next||"").includes("⚠️"); const lv=levelOf(j);
+  const applied=stageOf(j)==="Applied";
   return `<div class="card" onclick="openJob(${j._i})">
     <div class="top"><div><div class="co">${j.company}</div><div class="ro">${j.role}</div>${j.posted?`<div class="posted">Posted ${j.posted}${j.src?' · '+j.src:''}</div>`:''}</div>
       <span class="fitb ${j.fit<85?'mid':''}">${j.fit}</span></div>
     <div class="foot">
       ${warn?'<span class="lvl lvl-senior">⚠ Confirm</span>':`<span class="lvl lvl-${lv.cls}">${lv.label}</span>`}
-      <span class="footr"><span class="open">Open <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span><button class="del" title="Remove from board" onclick="event.stopPropagation();deleteJob(${j._i})">Remove</button></span>
+      <span class="footr">
+        <button class="actbtn check ${applied?'on':''}" title="${applied?'Applied — click to move back to Prospects':'Mark as applied — moves it to your Applied tab'}" onclick="event.stopPropagation();toggleApplied(${j._i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="actbtn x" title="Remove from board" onclick="event.stopPropagation();deleteJob(${j._i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </span>
     </div></div>`;
 }
 function industryOf(j){
@@ -630,7 +652,7 @@ function industryOf(j){
 }
 
 let curTab="prospects", curInd="All";
-const activeSet=()=>liveJobs().filter(j=> curTab==="prospects" ? j.stage==="To Apply" : j.stage!=="To Apply").sort((a,b)=>sortFit(b)-sortFit(a));
+const activeSet=()=>liveJobs().filter(j=> curTab==="prospects" ? stageOf(j)==="To Apply" : stageOf(j)!=="To Apply").sort((a,b)=>sortFit(b)-sortFit(a));
 function renderFilters(){
   const set=activeSet(), counts={};
   set.forEach(j=>{const i=industryOf(j); counts[i]=(counts[i]||0)+1;});
@@ -664,11 +686,14 @@ async function loadSuggestions(){
     const r=await fetch(SUPA_URL+"/rest/v1/job_suggestions?select=*&order=created_at.desc",{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}});
     const d=await r.json(); window._sugg=Array.isArray(d)?d:[];
   }catch(e){ window._sugg=window._sugg||[]; }
-  const c=document.getElementById("cnt-suggest"); if(c) c.textContent=(window._sugg||[]).length;
+  const c=document.getElementById("cnt-suggest"); if(c) c.textContent=(window._sugg||[]).filter(s=>!suggDismissed.has(s.id)).length;
   if(curTab==="suggestions") renderSuggest();
 }
 function renderSuggest(){
   const list=window._sugg||[];
+  // your view: hide removed ones, keep applied ones at the bottom so the open ones stay on top
+  const visible=list.filter(s=>!suggDismissed.has(s.id))
+    .sort((a,b)=>(suggApplied.has(a.id)?1:0)-(suggApplied.has(b.id)?1:0));
   document.getElementById("suggest").innerHTML=`
     <div class="sform">
       <div class="sf-title">Add a job for Joel</div>
@@ -679,14 +704,45 @@ function renderSuggest(){
       <button class="sf-btn" onclick="submitSuggestion()">Add to Joel's board</button>
       <div class="sf-msg" id="su-msg"></div>
     </div>
-    <div class="seclabel" style="margin-top:34px">Suggested jobs (${list.length})</div>
-    <div class="grid">${list.length?list.map(s=>`
-      <div class="card" onclick="window.open('${esc(s.url).replace(/'/g,'%27')}','_blank')">
+    <div class="seclabel" style="margin-top:34px">Suggested jobs (${visible.length})</div>
+    <div class="grid">${visible.length?visible.map(s=>{
+      const applied=suggApplied.has(s.id);
+      return `
+      <div class="card${applied?' isdone':''}" onclick="window.open('${esc(s.url).replace(/'/g,'%27')}','_blank')">
         <div class="top"><div><div class="co">${esc(s.company||host(s.url))}</div><div class="ro">${esc(s.note||'Suggested job')}</div>${s.created_at?`<div class="posted">${new Date(s.created_at).toLocaleDateString()}</div>`:''}</div>
           <span class="fitb mid">from ${esc(s.tagged_by||'Dad')}</span></div>
-        <div class="foot"><span class="lvl lvl-reach">Suggestion</span><span class="open">Open <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span></div>
-      </div>`).join(''):'<div style="color:var(--faint);font-size:14px;padding:18px 2px">No suggestions yet. Paste a job above and it shows up here for both of you.</div>'}</div>`;
+        <div class="foot">
+          ${applied?'<span class="lvl lvl-range">Applied</span>':'<span class="lvl lvl-reach">Suggestion</span>'}
+          <span class="footr">
+            <button class="actbtn check ${applied?'on':''}" title="${applied?'Applied — click to unmark':'Mark as applied'}" onclick="event.stopPropagation();toggleSuggApplied(${s.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+            <button class="actbtn x" title="Remove from your list" onclick="event.stopPropagation();dismissSugg(${s.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+          </span>
+        </div>
+      </div>`;}).join(''):'<div style="color:var(--faint);font-size:14px;padding:18px 2px">No suggestions yet. Paste a job above and it shows up here for both of you.</div>'}</div>`;
 }
+function toggleSuggApplied(id){
+  if(suggApplied.has(id)) suggApplied.delete(id); else suggApplied.add(id);
+  persistSugg(); renderSuggest();
+  const c=document.getElementById("cnt-suggest"); if(c) c.textContent=(window._sugg||[]).filter(s=>!suggDismissed.has(s.id)).length;
+}
+let lastSuggDismissed=null;
+function dismissSugg(id){
+  suggDismissed.add(id); persistSugg(); lastSuggDismissed=id;
+  renderSuggest();
+  const c=document.getElementById("cnt-suggest"); if(c) c.textContent=(window._sugg||[]).filter(s=>!suggDismissed.has(s.id)).length;
+  const s=(window._sugg||[]).find(x=>x.id===id)||{};
+  const t=document.getElementById('toast');
+  t.innerHTML=`Removed <b>${esc(s.company||host(s.url||''))}</b> from your list <span class="undo" onclick="undoDismissSugg()">Undo</span>`;
+  t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),6000);
+}
+function undoDismissSugg(){
+  if(lastSuggDismissed==null) return;
+  suggDismissed.delete(lastSuggDismissed); persistSugg(); lastSuggDismissed=null;
+  renderSuggest();
+  const c=document.getElementById("cnt-suggest"); if(c) c.textContent=(window._sugg||[]).filter(s=>!suggDismissed.has(s.id)).length;
+  document.getElementById('toast').classList.remove('show');
+}
+window.toggleSuggApplied=toggleSuggApplied; window.dismissSugg=dismissSugg; window.undoDismissSugg=undoDismissSugg;
 window.submitSuggestion=async function(){
   const urlEl=document.getElementById("su-url"), msg=document.getElementById("su-msg");
   const url=(urlEl.value||"").trim();
@@ -764,18 +820,35 @@ function undoDelete(){
   renderStats(); renderFilters(); renderGrid();
   document.getElementById('toast').classList.remove('show');
 }
+function toggleApplied(i){
+  const j=JOBS[i]; if(!j) return;
+  const nowApplied = !appliedSet.has(j._id);
+  if(nowApplied) appliedSet.add(j._id); else appliedSet.delete(j._id);
+  persistApplied();
+  if(detEl && detEl.style.display==='block') showList();
+  renderStats(); renderFilters(); renderGrid();
+  const t=document.getElementById('toast');
+  t.innerHTML = nowApplied
+    ? `Moved <b>${j.company}</b> to Applied <span class="undo" onclick="toggleApplied(${i})">Undo</span>`
+    : `Moved <b>${j.company}</b> back to Prospects <span class="undo" onclick="toggleApplied(${i})">Undo</span>`;
+  t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),6000);
+}
+window.toggleApplied=toggleApplied;
 function openJob(i){
   const j=JOBS[i]; const warn=(j.next||"").includes("⚠️"); const letter=buildLetter(j); const lv=levelOf(j);
   detEl.innerHTML=`
     <div class="back" onclick="showList()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> All prospects</div>
     <div class="dhead">
       <div><h1>${j.company}</h1><div class="drole">${j.role}</div></div>
-      <button class="btn danger" onclick="deleteJob(${i})">Remove from board</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="toggleApplied(${i})">${stageOf(j)==="Applied"?"✓ Applied — move back":"✓ Mark as applied"}</button>
+        <button class="btn danger" onclick="deleteJob(${i})">Remove from board</button>
+      </div>
     </div>
     <div class="metarow">
       <span class="pill fitp"><b>${j.fit}</b> fit</span>
       <span class="pill"><b>${lv.label}</b> for your level</span>
-      <span class="pill">Stage: <b>${j.stage}</b></span>
+      <span class="pill">Stage: <b>${stageOf(j)}</b></span>
       ${j.applied?`<span class="pill">Applied <b>${j.applied}</b></span>`:""}
       ${j.posted?`<span class="pill">Posted <b>${j.posted}</b></span>`:""}
       ${j.location?`<span class="pill"><b>${j.location}</b></span>`:""}
